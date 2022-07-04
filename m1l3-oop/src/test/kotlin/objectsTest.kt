@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.oop
+import org.junit.Test
 
 class ObjectsExample {
     companion object {
@@ -20,9 +20,12 @@ class ObjectsExample {
     }
 }
 
-fun main() {
-    ObjectsExample()
-    ObjectsExample.doSmth()
-    ObjectsExample.A.doSmth()
-    ObjectsExample.A.doSmth()
+class ObjectsTest {
+    @Test
+    fun test() {
+        ObjectsExample()
+        ObjectsExample.doSmth()
+        ObjectsExample.A.doSmth()
+        ObjectsExample.A.doSmth()
+    }
 }

@@ -1,4 +1,5 @@
-package ru.otus.otuskotlin.oop
+import kotlin.test.Test
+import kotlin.test.assertEquals
 
 import java.math.BigDecimal
 import java.text.NumberFormat
@@ -28,12 +29,17 @@ constructor(
     }
 }
 
-fun main() {
-    val a = Cash("10", Currency.getInstance("USD"))
-    val b = Cash("20", Currency.getInstance("USD"))
-    val c = b - a
-    //c.amount = BigDecimal.TEN; // ERROR!
-    println(c.amount)
-    println(a)
-    println(c.format(Locale.FRANCE))
+class CashTest {
+    @Test
+    fun test() {
+        val a = Cash("10", Currency.getInstance("USD"))
+        val b = Cash("20", Currency.getInstance("USD"))
+        val c = b - a
+        //c.amount = BigDecimal.TEN; // ERROR!
+        println(c.amount)
+        println(a)
+        println(c.format(Locale.FRANCE))
+
+        assertEquals(c.amount, BigDecimal.TEN);
+    }
 }
