@@ -11,3 +11,4 @@ pluginManagement {
 include("m1l1-hello-world")
 include("m1l3-oop")
 include("m1l4-dsl")
+include("m1l6-flows-and-channels")
