@@ -1,19 +1,20 @@
 plugins {
-    application
-    kotlin("jvm") version "1.7.0"
+    kotlin("jvm") apply false
+    kotlin("multiplatform") apply false
 }
 
-repositories {
-    mavenCentral()
+group = "ru.otus.otuskotlin.marketplace"
+version = "0.0.1-SNAPSHOT"
+
+allprojects {
+    repositories {
+        google()
+        mavenCentral()
+        maven { url = uri("https://jitpack.io") }
+    }
 }
 
-dependencies {
-    implementation(kotlin("stdlib-jdk8"))
-
-    testImplementation(kotlin("test"))
-    testImplementation(kotlin("test-junit"))
-}
-
-application {
-    mainClass.set("ru.otus.otuskotlin.marketplace.AppKt")
+subprojects {
+    group = rootProject.group
+    version = rootProject.version
 }
