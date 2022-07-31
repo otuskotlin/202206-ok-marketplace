@@ -9,7 +9,7 @@ import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldMatch
 
 class KotestWithParams : ShouldSpec({
-    should("Multiplication tests") {
+    context("Multiplication tests") {
         withData(
             mapOf(
                 "10x2" to Triple(10, 2, 20),
@@ -29,13 +29,13 @@ class EmailTest : DescribeSpec({
 val emailValidation = describeSpec {
 
     describe("Registration") {
-        context("Not existing user") {
+        context("Checking user's mail") {
             forAll(
                 row("test@test.com"),
                 row("simple-user@gmail.com"),
             ) {
                 assertSoftly {
-                    it shouldMatch "/^\\S+@\\S+\\.\\S+\$/"
+                    it shouldMatch "^(.+)@(.+)\$"
                 }
             }
         }

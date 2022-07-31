@@ -15,7 +15,7 @@ class UUIDTestJS : StringSpec({
         currentDate().iso shouldContain "T"
     }
 
-    "date should conains date and time" {
+    "date should contains date and time" {
         val data = currentDate().iso
             .split("T")
 

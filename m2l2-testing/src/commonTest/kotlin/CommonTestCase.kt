@@ -16,7 +16,7 @@ class UUIDTestCommon : FunSpec() {
             currentDate().iso shouldContain "T"
         }
 
-        test("date should conains date and time") {
+        test("date should contains date and time") {
             val data = currentDate().iso
                 .split("T")
 
