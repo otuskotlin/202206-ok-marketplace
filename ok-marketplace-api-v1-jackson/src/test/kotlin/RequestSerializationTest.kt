@@ -5,7 +5,7 @@ import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 
-class SerializationTest {
+class RequestSerializationTest {
     private val request = AdCreateRequest(
         requestId = "123",
         debug = AdDebug(
@@ -27,6 +27,7 @@ class SerializationTest {
         assertContains(json, Regex("\"title\":\\s*\"ad title\""))
         assertContains(json, Regex("\"mode\":\\s*\"stub\""))
         assertContains(json, Regex("\"stub\":\\s*\"badTitle\""))
+        assertContains(json, Regex("\"requestType\":\\s*\"create\""))
     }
 
     @Test
