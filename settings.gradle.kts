@@ -1,4 +1,4 @@
-rootProject.name = "marketplace"
+rootProject.name = "ok-202206-marketplace"
 
 pluginManagement {
     plugins {

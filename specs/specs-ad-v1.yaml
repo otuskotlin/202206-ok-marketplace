@@ -1,0 +1,455 @@
+openapi: 3.0.4
+info:
+  title: Marketplace
+  description: This is a place where sellers and buyers meat each other
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: http://localhost/v1
+tags:
+  - name: ad
+    description: Объвление (о покупке или продаже)
+  - name: pet
+    description: Everything about your Pets
+paths:
+  /ad/create:
+    post:
+      tags:
+        - ad
+      summary: Create ad
+      operationId: adCreate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdCreateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdCreateResponse'
+  /ad/read:
+    post:
+      tags:
+        - ad
+      summary: Read ad
+      operationId: adRead
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdReadRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdReadResponse'
+  /ad/update:
+    post:
+      tags:
+        - ad
+      summary: Update ad
+      operationId: adUpdate
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdUpdateRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdUpdateResponse'
+  /ad/delete:
+    post:
+      tags:
+        - ad
+      summary: Delete ad
+      operationId: adDelete
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdDeleteRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdDeleteResponse'
+  /ad/search:
+    post:
+      tags:
+        - ad
+      summary: Search ad
+      operationId: adSearch
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdSearchRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdSearchResponse'
+  /ad/offers:
+    post:
+      tags:
+        - ad
+      summary: Search offers
+      operationId: adOffers
+      requestBody:
+        description: Request body
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdOffersRequest'
+        required: true
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdOffersResponse'
+
+components:
+  schemas:
+
+    IRequest:
+      type: object
+      description: Базовый интерфейс для всех запросов
+      properties:
+        requestType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+      discriminator:
+        propertyName: requestType
+        mapping:
+          create: '#/components/schemas/AdCreateRequest'
+          read:   '#/components/schemas/AdReadRequest'
+          update: '#/components/schemas/AdUpdateRequest'
+          delete: '#/components/schemas/AdDeleteRequest'
+          search: '#/components/schemas/AdSearchRequest'
+          offers: '#/components/schemas/AdOffersRequest'
+
+    Error:
+      type: object
+      properties:
+        code:
+          type: string
+        group:
+          type: string
+        field:
+          type: string
+        message:
+          type: string
+
+    ResponseResult:
+      type: string
+      enum:
+        - success
+        - error
+
+    IResponse:
+      type: object
+      description: Базовый интерфейс для всех ответов
+      properties:
+        responseType:
+          type: string
+          description: Поле-дескриминатор для вычисления типа запроса
+          example: create
+        requestId:
+          type: string
+          description: Идентификатор запроса для отладки
+        result:
+          $ref: '#/components/schemas/ResponseResult'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Error'
+
+      discriminator:
+        propertyName: responseType
+        mapping:
+          create: '#/components/schemas/AdCreateResponse'
+          read:   '#/components/schemas/AdReadResponse'
+          update: '#/components/schemas/AdUpdateResponse'
+          delete: '#/components/schemas/AdDeleteResponse'
+          search: '#/components/schemas/AdSearchResponse'
+          offers: '#/components/schemas/AdOffersResponse'
+
+
+    UserId:
+      type: string
+      description: Идентификатор пользователя
+    AdId:
+      type: string
+      description: Идентификатор объявления
+    AdLock:
+      type: string
+      description: Версия оптимистичной блокировки
+
+    BaseAd:
+      type: object
+      description: Объект описывает свойства, одинаковые для create и update
+      properties:
+        title:
+          type: string
+          description: Заголовок объявления
+        description:
+          type: string
+          description: Описание объявления
+        adType:
+          $ref: '#/components/schemas/DealSide'
+        visibility:
+          $ref: '#/components/schemas/AdVisibility'
+
+    DealSide:
+      type: string
+      description: 'Сторона сделки: спрос или предложение'
+      enum:
+        - demand
+        - supply
+
+    AdVisibility:
+      type: string
+      description: 'Тип видимости объявления. Возможные значения: видит только владелец, только зарегистрированный в системе пользователь, видимо всем'
+      enum:
+        - ownerOnly
+        - registeredOnly
+        - public
+
+    AdCreateObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+
+    AdCreateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdCreateObject'
+
+    AdReadObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+
+    AdReadRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdReadObject'
+
+    AdUpdateObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+
+    AdUpdateRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdUpdateObject'
+
+    AdDeleteObject:
+      allOf:
+        - type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+
+    AdDeleteRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdDeleteObject'
+
+    AdSearchFilter:
+      type: object
+      description: Набор фильтров для поиска
+      properties:
+        searchString:
+          type: string
+          description: Поисковая строка, которая будет искаться в объявлениях
+
+    AdSearchRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            adFilter:
+              $ref: '#/components/schemas/AdSearchFilter'
+
+    AdOffersObject:
+      $ref: '#/components/schemas/AdReadObject'
+
+    AdOffersRequest:
+      allOf:
+        - $ref: '#/components/schemas/IRequest'
+        - $ref: '#/components/schemas/AdRequestDebug'
+        - type: object
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdOffersObject'
+
+    AdResponseObject:
+      allOf:
+        - $ref: '#/components/schemas/BaseAd'
+        - type: object
+          description: Объект, который возвращается в ответе бэкенда
+          properties:
+            id:
+              $ref: '#/components/schemas/AdId'
+            ownerId:
+              $ref: '#/components/schemas/UserId'
+            lock:
+              $ref: '#/components/schemas/AdLock'
+            permissions:
+              type: array
+              uniqueItems: true
+              items:
+                $ref: '#/components/schemas/AdPermissions'
+
+    AdPermissions:
+      type: string
+      description: Доступы для клиента для операций над объявлением
+      enum:
+        - read
+        - update
+        - delete
+        - makeVisiblePublic
+        - makeVisibleOwn
+        - makeVisibleGroup
+
+    AdResponseSingle:
+      allOf:
+        - type: object
+          description: Ответ с одним объектом объявления
+          properties:
+            ad:
+              $ref: '#/components/schemas/AdResponseObject'
+
+    AdResponseMulti:
+      allOf:
+        - type: object
+          description: Список найденных объектов
+          properties:
+            ads:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdResponseObject'
+
+    AdCreateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdReadResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdUpdateResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdDeleteResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+
+    AdSearchResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseMulti'
+
+    AdOffersResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+        - $ref: '#/components/schemas/AdResponseSingle'
+        - $ref: '#/components/schemas/AdResponseMulti'
+
+    # STUBS ======================
+    AdRequestDebugMode:
+      type: string
+      enum:
+        - prod
+        - test
+        - stub
+
+    AdRequestDebug:
+      type: object
+      properties:
+        debug:
+          $ref: '#/components/schemas/AdDebug'
+
+    AdDebug:
+      type: object
+      properties:
+        mode:
+          $ref: '#/components/schemas/AdRequestDebugMode'
+        stub:
+          $ref: '#/components/schemas/AdRequestDebugStubs'
+
+    AdRequestDebugStubs:
+      type: string
+      description: Перечисления всех стабов
+      enum:
+        - success
+        - notFound
+        - badId
+        - badTitle
+        - badDescription
+        - badVisibility
+        - cannotDelete
+        - badSearchString
