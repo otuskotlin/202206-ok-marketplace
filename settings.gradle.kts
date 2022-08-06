@@ -9,6 +9,7 @@ pluginManagement {
         kotlin("jvm") version kotlinVersion apply false
         kotlin("multiplatform") version kotlinVersion apply false
         id("io.kotest.multiplatform") version kotestVersion apply false
+        kotlin("plugin.serialization") version kotlinVersion apply false
 
         id("org.openapi.generator") version openapiVersion apply false
 
@@ -24,3 +25,4 @@ pluginManagement {
 //include("m2l2-testing")
 
 include("ok-marketplace-api-v1-jackson")
+include("ok-marketplace-api-v2-kmp")
