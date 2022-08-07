@@ -39,7 +39,7 @@ val apiV2Mapper = Json {
             }
         }
 
-        contextual(AdRequestSerializer1)
-        contextual(AdResponseSerializer1)
+        contextual(AdRequestSerializer)
+        contextual(AdResponseSerializer)
     }
 }
