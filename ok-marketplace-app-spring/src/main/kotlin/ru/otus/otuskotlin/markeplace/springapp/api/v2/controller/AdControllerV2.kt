@@ -1,35 +1,52 @@
 package ru.otus.otuskotlin.markeplace.springapp.api.v2.controller
 
 import org.springframework.web.bind.annotation.*
-import ru.otus.otuskotlin.markeplace.springapp.api.controllerAction
-import ru.otus.otuskotlin.markeplace.springapp.api.v2.service.AdServiceV2
 import ru.otus.otuskotlin.marketplace.api.v2.models.*
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.mappers.v2.*
+import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 
 @RestController
 @RequestMapping("v2/ad")
-class AdControllerV2(
-    private val adServiceV2: AdServiceV2
-) {
+class AdControllerV2 {
 
     @PostMapping("create")
-    fun createAd(@RequestBody createAdRequest: AdCreateRequest): AdCreateResponse =
-        controllerAction(createAdRequest, MkplContext::fromTransport, adServiceV2::createAd, MkplContext::toTransportCreate)
+    fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse {
+        val context = MkplContext()
+        context.fromTransport(request)
+        context.adResponse = MkplAdStub.get()
+        return context.toTransportCreate()
+    }
 
     @PostMapping("read")
-    fun readAd(@RequestBody readAdRequest: AdReadRequest): AdReadResponse =
-        controllerAction(readAdRequest, MkplContext::fromTransport, adServiceV2::readAd, MkplContext::toTransportRead)
+    fun readAd(@RequestBody request: AdReadRequest): AdReadResponse  {
+        val context = MkplContext()
+        context.fromTransport(request)
+        context.adResponse = MkplAdStub.get()
+        return context.toTransportRead()
+    }
 
     @PostMapping("update")
-    fun updateAd(@RequestBody updateAdRequest: AdUpdateRequest): AdUpdateResponse =
-        controllerAction(updateAdRequest, MkplContext::fromTransport, adServiceV2::updateAd, MkplContext::toTransportUpdate)
+    fun updateAd(@RequestBody request: AdUpdateRequest): AdUpdateResponse  {
+        val context = MkplContext()
+        context.fromTransport(request)
+        context.adResponse = MkplAdStub.get()
+        return context.toTransportUpdate()
+    }
 
     @PostMapping("delete")
-    fun deleteAd(@RequestBody deleteAdRequest: AdDeleteRequest): AdDeleteResponse =
-        controllerAction(deleteAdRequest, MkplContext::fromTransport, adServiceV2::deleteAd, MkplContext::toTransportDelete)
+    fun deleteAd(@RequestBody request: AdDeleteRequest): AdDeleteResponse  {
+        val context = MkplContext()
+        context.fromTransport(request)
+        context.adResponse = MkplAdStub.get()
+        return context.toTransportDelete()
+    }
 
     @PostMapping("search")
-    fun searchAd(@RequestBody searchAdRequest: AdSearchRequest) =
-        controllerAction(searchAdRequest, MkplContext::fromTransport, adServiceV2::searchAd, MkplContext::toTransportCreate)
+    fun searchAd(@RequestBody request: AdSearchRequest): AdSearchResponse {
+        val context = MkplContext()
+        context.fromTransport(request)
+        context.adsResponse.add(MkplAdStub.get())
+        return context.toTransportSearch()
+    }
 }

@@ -38,6 +38,23 @@ dependencies {
     testImplementation("com.ninja-squad:springmockk:3.0.1") // mockking beans
 }
 
+tasks {
+    withType<ProcessResources> {
+        from("$rootDir/specs") {
+            into("/static")
+        }
+    }
+}
+
+/*sourceSets {
+    main {
+        resources {
+            srcDirs("$rootDir/specs")
+            println(srcDirs)
+        }
+    }
+}*/
+
 tasks.withType<Test> {
     useJUnitPlatform()
 }

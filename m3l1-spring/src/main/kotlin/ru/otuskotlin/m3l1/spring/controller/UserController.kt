@@ -16,9 +16,12 @@ import ru.otuskotlin.m3l1.spring.service.UserService
 class UserController(
     private val service: UserService,
 ) {
+    init {
+    }
 
     @GetMapping
-    fun fetchAll() = service.fetchAllUsers()
+    fun fetchAll() =
+        service.fetchAllUsers()
 
     @GetMapping(path = ["/{id}"])
     fun fetchById(@PathVariable id: Int) = service.fetchUser(id)
