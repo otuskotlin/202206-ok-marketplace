@@ -7,7 +7,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 1.0.0
 servers:
-  - url: http://localhost/v1
+  - url: http://localhost:8080/v1
 tags:
   - name: ad
     description: Объвление (о покупке или продаже)
