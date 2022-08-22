@@ -1,11 +1,13 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 plugins {
     kotlin("multiplatform")
 }
 
 kotlin {
     jvm {}
-//    macosX64 {}
-//    linuxX64 {}
+    macosX64 {}
+    linuxX64 {}
 
     sourceSets {
         all { languageSettings.optIn("kotlin.RequiresOptIn") }

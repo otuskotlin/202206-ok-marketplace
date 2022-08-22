@@ -16,8 +16,8 @@ fun ktor(
 
 kotlin {
     jvm { }
-//    macosX64 {}
-//    linuxX64 {}
+    macosX64 {}
+    linuxX64 {}
 
     sourceSets {
         val commonMain by getting {
@@ -26,7 +26,7 @@ kotlin {
                 implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
 
                 implementation(project(":ok-marketplace-common"))
-//                implementation(project(":ok-marketplace-services"))
+                implementation(project(":ok-marketplace-services"))
                 implementation(project(":ok-marketplace-api-v2-kmp"))
                 implementation(project(":ok-marketplace-mappers-v2"))
             }
