@@ -61,7 +61,6 @@ dependencies {
     implementation(ktor("auth-jwt")) // "io.ktor:ktor-auth-jwt:$ktorVersion"
 
     implementation("ch.qos.logback:logback-classic:$logbackVersion")
-    implementation("io.github.microutils:kotlin-logging-jvm:$kotlinLoggingJvmVersion")
 
     // transport models
     implementation(project(":ok-marketplace-common"))
@@ -74,13 +73,10 @@ dependencies {
     implementation(project(":ok-marketplace-mappers-v2"))
 
     // Services
-//    implementation(project(":ok-marketplace-services"))
+    implementation(project(":ok-marketplace-services"))
 
     // Stubs
     implementation(project(":ok-marketplace-stubs"))
-
-    // Repositories
-//    implementation(project(":ok-marketplace-repo-inmemory"))
 
     testImplementation(kotlin("test-junit"))
     testImplementation(ktor("test-host")) // "io.ktor:ktor-server-test-host:$ktorVersion"
