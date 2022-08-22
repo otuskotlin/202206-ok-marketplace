@@ -1,12 +1,37 @@
+@file:Suppress("UNUSED_VARIABLE")
+
 plugins {
-    kotlin("jvm")
+    kotlin("multiplatform")
 }
 
-dependencies {
-    implementation(kotlin("stdlib"))
+kotlin {
+    jvm {}
+    macosX64 {}
+    linuxX64 {}
 
-    // transport models
-    implementation(project(":ok-marketplace-common"))
+    sourceSets {
+        val commonMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-common"))
 
-    testImplementation(kotlin("test-junit"))
+                implementation(project(":ok-marketplace-common"))
+            }
+        }
+        val commonTest by getting {
+            dependencies {
+                implementation(kotlin("test-common"))
+                implementation(kotlin("test-annotations-common"))
+            }
+        }
+        val jvmMain by getting {
+            dependencies {
+                implementation(kotlin("stdlib-jdk8"))
+            }
+        }
+        val jvmTest by getting {
+            dependencies {
+                implementation(kotlin("test-junit"))
+            }
+        }
+    }
 }
