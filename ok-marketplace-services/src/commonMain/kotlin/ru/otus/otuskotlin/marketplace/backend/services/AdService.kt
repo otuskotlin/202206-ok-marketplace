@@ -1,10 +1,7 @@
 package ru.otus.otuskotlin.marketplace.backend.services
 
 import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplError
-import ru.otus.otuskotlin.marketplace.common.models.MkplVisibility
-import ru.otus.otuskotlin.marketplace.common.models.MkplWorkMode
+import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.stubs.MkplStubs
 import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 
@@ -66,8 +63,8 @@ class AdService {
 
         return when (context.stubCase) {
             MkplStubs.SUCCESS -> context.successResponse {
-                adsResponse.add(
-                    MkplAdStub.get()
+                adsResponse.addAll(
+                    MkplAdStub.prepareSearchList("Болт", MkplDealSide.DEMAND)
                 )
             }
             else -> context.errorResponse(buildError) {

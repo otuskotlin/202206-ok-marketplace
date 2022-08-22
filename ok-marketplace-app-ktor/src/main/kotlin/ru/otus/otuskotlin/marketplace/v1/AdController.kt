@@ -6,8 +6,8 @@ import ru.otus.otuskotlin.marketplace.backend.services.AdService
 import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
 
 suspend fun ApplicationCall.createAd(service: AdService) =
-    controllerHelperV1<AdCreateRequest, AdCreateResponse>(MkplCommand.READ) {
-        service.readAd(this, ::buildError)
+    controllerHelperV1<AdCreateRequest, AdCreateResponse>(MkplCommand.CREATE) {
+        service.createAd(this)
     }
 
 suspend fun ApplicationCall.readAd(service: AdService) =
