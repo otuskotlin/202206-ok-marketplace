@@ -23,6 +23,7 @@ pluginManagement {
 
         id("org.openapi.generator") version openapiVersion apply false
         id("com.bmuschko.docker-java-application") version bmuschkoVersion apply false
+        id("com.bmuschko.docker-remote-api") version bmuschkoVersion apply false
 
     }
 }
@@ -45,4 +46,5 @@ include ("ok-marketplace-stubs")
 include ("ok-marketplace-app-spring")
 include("ok-marketplace-app-ktor")
 include("ok-marketplace-app-ktor-common")
+include("ok-marketplace-app-ktor-native")
 include("ok-marketplace-services")
