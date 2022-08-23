@@ -1,31 +1,50 @@
 package ru.otus.otuskotlin.marketplace.v1
 
 import io.ktor.server.application.*
+import io.ktor.server.request.*
+import io.ktor.server.response.*
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
-import ru.otus.otuskotlin.marketplace.backend.services.AdService
-import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
+import ru.otus.otuskotlin.marketplace.common.MkplContext
+import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
+import ru.otus.otuskotlin.marketplace.mappers.v1.*
+import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 
-suspend fun ApplicationCall.createAd(service: AdService) =
-    controllerHelperV1<AdCreateRequest, AdCreateResponse>(MkplCommand.CREATE) {
-        service.createAd(this)
-    }
+suspend fun ApplicationCall.createAd() {
+    val request = receive<AdCreateRequest>()
+    val context = MkplContext()
+    context.fromTransport(request)
+    context.adResponse = MkplAdStub.get()
+    respond(context.toTransportCreate())
+}
 
-suspend fun ApplicationCall.readAd(service: AdService) =
-    controllerHelperV1<AdReadRequest, AdReadResponse>(MkplCommand.READ) {
-        service.readAd(this, ::buildError)
-    }
+suspend fun ApplicationCall.readAd() {
+    val request = receive<AdReadRequest>()
+    val context = MkplContext()
+    context.fromTransport(request)
+    context.adResponse = MkplAdStub.get()
+    respond(context.toTransportRead())
+}
 
-suspend fun ApplicationCall.updateAd(service: AdService) =
-    controllerHelperV1<AdUpdateRequest, AdUpdateResponse>(MkplCommand.UPDATE) {
-        service.updateAd(this, ::buildError)
-    }
+suspend fun ApplicationCall.updateAd() {
+    val request = receive<AdUpdateRequest>()
+    val context = MkplContext()
+    context.fromTransport(request)
+    context.adResponse = MkplAdStub.get()
+    respond(context.toTransportUpdate())
+}
 
-suspend fun ApplicationCall.deleteAd(service: AdService) =
-    controllerHelperV1<AdDeleteRequest, AdDeleteResponse>(MkplCommand.DELETE) {
-        service.deleteAd(this, ::buildError)
-    }
+suspend fun ApplicationCall.deleteAd() {
+    val request = receive<AdDeleteRequest>()
+    val context = MkplContext()
+    context.fromTransport(request)
+    context.adResponse = MkplAdStub.get()
+    respond(context.toTransportDelete())
+}
 
-suspend fun ApplicationCall.searchAd(adService: AdService) =
-    controllerHelperV1<AdSearchRequest, AdSearchResponse>(MkplCommand.SEARCH) {
-        adService.searchAd(this, ::buildError)
-    }
+suspend fun ApplicationCall.searchAd() {
+    val request = receive<AdSearchRequest>()
+    val context = MkplContext()
+    context.fromTransport(request)
+    context.adsResponse.addAll(MkplAdStub.prepareSearchList("Болт", MkplDealSide.DEMAND))
+    respond(context.toTransportSearch())
+}
