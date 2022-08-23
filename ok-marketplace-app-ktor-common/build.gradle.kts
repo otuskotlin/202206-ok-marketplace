@@ -4,9 +4,11 @@ import org.jetbrains.kotlin.util.suffixIfNot
 
 plugins {
     kotlin("multiplatform")
+    kotlin("plugin.serialization")
 }
 
 val ktorVersion: String by project
+val serializationVersion: String by project
 
 fun ktor(
     module: String,
@@ -29,6 +31,8 @@ kotlin {
                 implementation(project(":ok-marketplace-services"))
                 implementation(project(":ok-marketplace-api-v2-kmp"))
                 implementation(project(":ok-marketplace-mappers-v2"))
+
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
             }
         }
         val commonTest by getting {

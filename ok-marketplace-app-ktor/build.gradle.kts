@@ -10,6 +10,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm")
     id("application")
     id("com.bmuschko.docker-java-application")
+    kotlin("plugin.serialization")
 }
 
 application {
@@ -45,6 +46,7 @@ dependencies {
     // jackson
     implementation(ktor("jackson", "serialization")) // io.ktor:ktor-serialization-jackson
     implementation(ktor("content-negotiation")) // io.ktor:ktor-server-content-negotiation
+    implementation(ktor("kotlinx-json", "serialization")) // io.ktor:ktor-serialization-kotlinx-json
 
     implementation(ktor("locations"))
     implementation(ktor("caching-headers"))
