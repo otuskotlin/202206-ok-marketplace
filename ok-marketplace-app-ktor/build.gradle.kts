@@ -1,4 +1,7 @@
 import org.jetbrains.kotlin.util.suffixIfNot
+import org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink
+import com.bmuschko.gradle.docker.tasks.image.Dockerfile
+import com.bmuschko.gradle.docker.tasks.image.DockerBuildImage
 
 val ktorVersion: String by project
 val logbackVersion: String by project
@@ -22,7 +25,7 @@ repositories {
 
 application {
 //    mainClass.set("io.ktor.server.netty.EngineMain")
-    mainClass.set("ru.otus.otuskotlin.marketplace.app.ApplicationKt")
+    mainClass.set("ru.otus.otuskotlin.marketplace.ApplicationKt")
 }
 
 kotlin {
@@ -147,10 +150,9 @@ docker {
 }
 
 tasks {
-    val linkReleaseExecutableNative by getting(org.jetbrains.kotlin.gradle.tasks.KotlinNativeLink::class) {
+    val linkReleaseExecutableNative by getting(KotlinNativeLink::class)
 
-    }
-    val dockerDockerfile by creating(com.bmuschko.gradle.docker.tasks.image.Dockerfile::class) {
+    val dockerDockerfile by creating(Dockerfile::class) {
         group = "docker"
         from("ubuntu:22.02")
         doFirst {
@@ -162,11 +164,10 @@ tasks {
         copyFile("app", "/app")
         entryPoint("/app")
     }
-//    @Suppress("UNUSED_VARIABLE")
-//    val dockerBuildImage by creating(com.bmuschko.gradle.docker.tasks.image.DockerBuildImage::class) {
-//        group = "docker"
-//        dependsOn(dockerDockerfile)
-//        images.add("${project.name}:${project.version}")
-//    }
+    create("dockerBuildNativeImage", DockerBuildImage::class) {
+        group = "docker"
+        dependsOn(dockerDockerfile)
+        images.add("${project.name}:${project.version}")
+    }
 }
 
