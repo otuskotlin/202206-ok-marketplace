@@ -2,8 +2,6 @@ package ru.otus.otuskotlin.marketplace.app.v2
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*
-import ru.otus.otuskotlin.marketplace.backend.services.AdService
-import ru.otus.otuskotlin.marketplace.backend.services.OfferService
 
 fun Route.v2Ad() {
     route("ad") {
