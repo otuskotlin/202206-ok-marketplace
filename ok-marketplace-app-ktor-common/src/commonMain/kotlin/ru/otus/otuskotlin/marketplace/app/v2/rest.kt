@@ -5,30 +5,30 @@ import io.ktor.server.routing.*
 import ru.otus.otuskotlin.marketplace.backend.services.AdService
 import ru.otus.otuskotlin.marketplace.backend.services.OfferService
 
-fun Route.v2Ad(adService: AdService) {
+fun Route.v2Ad() {
     route("ad") {
         post("create") {
-            call.createAd(adService)
+            call.createAd()
         }
         post("read") {
-            call.readAd(adService)
+            call.readAd()
         }
         post("update") {
-            call.updateAd(adService)
+            call.updateAd()
         }
         post("delete") {
-            call.deleteAd(adService)
+            call.deleteAd()
         }
         post("search") {
-            call.searchAd(adService)
+            call.searchAd()
         }
     }
 }
 
-fun Route.v2Offer(offerService: OfferService) {
+fun Route.v2Offer() {
     route("ad") {
         post("offers") {
-            call.offersAd(offerService)
+            call.offersAd()
         }
     }
 }
