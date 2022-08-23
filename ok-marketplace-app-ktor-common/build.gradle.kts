@@ -28,11 +28,12 @@ kotlin {
                 implementation(ktor("core")) // "io.ktor:ktor-server-core:$ktorVersion"
 
                 implementation(project(":ok-marketplace-common"))
-                implementation(project(":ok-marketplace-services"))
                 implementation(project(":ok-marketplace-api-v2-kmp"))
                 implementation(project(":ok-marketplace-mappers-v2"))
+                implementation(project(":ok-marketplace-stubs"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+                implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
             }
         }
         val commonTest by getting {
