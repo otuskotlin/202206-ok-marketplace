@@ -13,85 +13,75 @@ import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 import yandex.cloud.sdk.functions.Context
 import yandex.cloud.sdk.functions.YcFunction
 
-class CreateAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("CreateAdHandler v1 start work")
-        val request = input.toTransportModel<AdCreateRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        mkplContext.adResponse = MkplAdStub.get()
-        return mkplContext.toTransportCreate().toResponse()
-    }
+val createAdHandler = YcFunction<Request, Response> { input, context ->
+    println("CreateAdHandler v1 start work")
+    val request = input.toTransportModel<AdCreateRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.adResponse = MkplAdStub.get()
+    mkplContext.toTransportCreate().toResponse()
 }
 
-class ReadAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("ReadAdHandler v1 start work")
-        val request = input.toTransportModel<AdReadRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        mkplContext.adResponse = MkplAdStub.get()
-        return mkplContext.toTransportRead().toResponse()
-    }
+val readAdHandler = YcFunction<Request, Response> { input, context ->
+    println("ReadAdHandler v1 start work")
+    val request = input.toTransportModel<AdReadRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.adResponse = MkplAdStub.get()
+    mkplContext.toTransportRead().toResponse()
 }
 
-class UpdateAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("UpdateAdHandler v1 start work")
-        val request = input.toTransportModel<AdUpdateRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        mkplContext.adResponse = MkplAdStub.get()
-        return mkplContext.toTransportUpdate().toResponse()
-    }
+val updateAdHandler = YcFunction<Request, Response> { input, context ->
+    println("UpdateAdHandler v1 start work")
+    val request = input.toTransportModel<AdUpdateRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.adResponse = MkplAdStub.get()
+    mkplContext.toTransportUpdate().toResponse()
+
 }
 
-class DeleteAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("DeleteAdHandler v1 start work")
-        val request = input.toTransportModel<AdDeleteRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        return mkplContext.toTransportDelete().toResponse()
-    }
+val deleteAdHandler = YcFunction<Request, Response> { input, context ->
+    println("DeleteAdHandler v1 start work")
+    val request = input.toTransportModel<AdDeleteRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.toTransportDelete().toResponse()
 }
 
-class SearchAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("SearchAdHandler v1 start work")
-        val request = input.toTransportModel<AdSearchRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        mkplContext.adResponse = MkplAdStub.get()
-        return mkplContext.toTransportSearch().toResponse()
-    }
+val searchAdHandler = YcFunction<Request, Response> { input, context ->
+    println("SearchAdHandler v1 start work")
+    val request = input.toTransportModel<AdSearchRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.adResponse = MkplAdStub.get()
+    mkplContext.toTransportSearch().toResponse()
+
 }
 
-class OffersAdHandler : YcFunction<Request, Response> {
-    override fun handle(input: Request, context: Context): Response {
-        println("OffersAdHandler v1 start work")
-        val request = input.toTransportModel<AdOffersRequest>()
-        val mkplContext = MkplContext(
-            timeStart = Clock.System.now(),
-            requestId = MkplRequestId(context.requestId)
-        )
-        mkplContext.fromTransport(request)
-        mkplContext.adsResponse.add(MkplAdStub.get())
-        return mkplContext.toTransportOffers().toResponse()
-    }
+val offersAdHandler = YcFunction<Request, Response> { input, context ->
+    println("OffersAdHandler v1 start work")
+    val request = input.toTransportModel<AdOffersRequest>()
+    val mkplContext = MkplContext(
+        timeStart = Clock.System.now(),
+        requestId = MkplRequestId(context.requestId)
+    )
+    mkplContext.fromTransport(request)
+    mkplContext.adsResponse.add(MkplAdStub.get())
+    mkplContext.toTransportOffers().toResponse()
 }
