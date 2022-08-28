@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.v1
+package ru.otus.otuskotlin.marketplace.app.ktor.v1
 
 import io.ktor.server.application.*
 import io.ktor.server.routing.*

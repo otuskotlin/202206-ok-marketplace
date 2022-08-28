@@ -1,0 +1,190 @@
+### Create
+POST http://127.0.0.1:8080/v2/ad/create
+Content-Type: application/json
+
+{
+  "requestType": "create",
+  "requestId": "12345",
+  "ad": {
+    "title": "Болт",
+    "description": "КРУТЕЙШИЙ",
+    "ownerId": "9435",
+    "visibility": "public",
+    "adType": "demand"
+  },
+  "debug": {
+    "mode": "test"
+  }
+}
+
+### Get unexisted ID
+POST http://127.0.0.1:8080/v2/ad/read
+Content-Type: application/json
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "ad": {
+    "id": "99999"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Read With Existed id
+POST http://127.0.0.1:8080/v2/ad/read
+Content-Type: application/json
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "ad": {
+    "id": "existed"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update
+POST http://localhost:8080/v2/ad/update
+Content-Type: application/json
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "ad": {
+    "adType": "proposal",
+    "id": "updated",
+    "visibility": "ownerOnly"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update with unexistedId
+POST http://localhost:8080/v2/ad/update
+Content-Type: application/json
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "ad": {
+    "id": "668"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Delete existed
+POST http://localhost:8080/v2/ad/delete
+Content-Type: application/json
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId",
+  "ad": {
+    "id": "existed_id"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Delete non-existed
+POST http://localhost:8080/v2/ad/delete
+Content-Type: application/json
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId_unknown",
+  "ad": {
+    "id": "unknownId"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Search by string
+POST http://localhost:8080/v2/ad/search
+Content-Type: application/json
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "adFilter": {
+    "searchString": "болт"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Search by string with error
+POST http://localhost:8080/v2/ad/search
+Content-Type: application/json
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "adFilter": {
+    "searchString": "кто тут"
+  },
+  "debug": {
+    "stub": "badSearchString"
+  }
+}
+
+### Search offer by unknown id
+POST http://localhost:8080/v2/ad/offers
+Content-Type: application/json
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search",
+  "ad": {
+    "id": "222_unknown_offer_id"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Find offer
+POST http://localhost:8080/v2/ad/offers
+Content-Type: application/json
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search",
+  "ad": {
+    "id": "234_offer"
+  },
+  "debug": {
+    "mode": "stub",
+    "stub": "success"
+  }
+}
+
+### Not find offer
+POST http://localhost:8080/ad/offers
+Content-Type: application/json
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search_bad",
+  "ad": {
+    "id": "234_offer"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+
+
+

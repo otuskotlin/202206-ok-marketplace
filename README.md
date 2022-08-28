@@ -85,19 +85,9 @@ Marketplace -- это площадка, на которой пользовате
 
 ## Фреймворки и транспорты
 
-[//]: # (1. [ok-marketplace-services]&#40;ok-marketplace-services&#41; - Сервис. Служит оберткой для модуля бизнес-логики. Подключается)
-
-[//]: # (   всеми фреймворками &#40;модулями `*-app-*`&#41;)
-
-[//]: # (1. [ok-marketplace-app-spring]&#40;ok-marketplace-app-spring&#41; - Приложение на Spring Framework)
-
-[//]: # (1. [ok-marketplace-app-ktor]&#40;ok-marketplace-app-ktor&#41; - Приложение на Ktor JVM)
-
-[//]: # (1. [ok-marketplace-app-ktor-native]&#40;ok-marketplace-app-ktor-native&#41; - Приложение на Ktor Native)
-
-[//]: # (1. [ok-marketplace-app-ktor-common]&#40;ok-marketplace-app-ktor-common&#41; - Общая логика для Ktor JVM и Ktor Native)
-
-[//]: # (1. [ok-marketplace-app-knative]&#40;ok-marketplace-app-knative&#41; - Скрипты запуска приложения в KNative)
+1. [ok-marketplace-app-spring](ok-marketplace-app-spring) - Приложение на Spring Framework
+1. [ok-marketplace-app-ktor](ok-marketplace-app-ktor) - Приложение на Ktor JVM/Native
+1. [ok-marketplace-app-knative](ok-marketplace-app-serverless) - Приложение для Yandex.Cloud lambda
 
 [//]: # (1. [ok-marketplace-app-rabbit]&#40;ok-marketplace-app-rabbit&#41; - Микросервис на RabbitMQ)
 
