@@ -7,7 +7,7 @@ object MkplAdStubBolts {
         get() = MkplAd(
             id = MkplAdId("666"),
             title = "Требуется болт",
-            description = "Требуется болт 100x5 с шистигранной шляпкой",
+            description = "Требуется болт 100x5 с шестигранной шляпкой",
             ownerId = MkplUserId("user-1"),
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
