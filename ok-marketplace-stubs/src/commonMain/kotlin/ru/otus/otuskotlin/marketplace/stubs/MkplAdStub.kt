@@ -1,13 +1,24 @@
 package ru.otus.otuskotlin.marketplace.stubs
 
-import ru.otus.otuskotlin.marketplace.common.models.MkplAd
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
-import ru.otus.otuskotlin.marketplace.stubs.MkplAdStubBolts.AD_DEMAND_BOLT1
-import ru.otus.otuskotlin.marketplace.stubs.MkplAdStubBolts.AD_SUPPLY_BOLT1
+import ru.otus.otuskotlin.marketplace.common.models.*
 
 object MkplAdStub {
-    fun get(): MkplAd = AD_DEMAND_BOLT1.copy()
+    fun get() = MkplAd(
+        id = MkplAdId("666"),
+        title = "Требуется болт",
+        description = "Требуется болт 100x5 с шестигранной шляпкой",
+        ownerId = MkplUserId("user-1"),
+        adType = MkplDealSide.DEMAND,
+        visibility = MkplVisibility.VISIBLE_PUBLIC,
+        permissionsClient = mutableSetOf(
+            MkplAdPermissionClient.READ,
+            MkplAdPermissionClient.UPDATE,
+            MkplAdPermissionClient.DELETE,
+            MkplAdPermissionClient.MAKE_VISIBLE_PUBLIC,
+            MkplAdPermissionClient.MAKE_VISIBLE_GROUP,
+            MkplAdPermissionClient.MAKE_VISIBLE_OWNER,
+        )
+    )
 
     fun prepareResult(block: MkplAd.() -> Unit): MkplAd = get().apply(block)
 
@@ -30,10 +41,10 @@ object MkplAdStub {
     )
 
     private fun mkplAdDemand(id: String, filter: String, type: MkplDealSide) =
-        mkplAd(AD_DEMAND_BOLT1, id = id, filter = filter, type = type)
+        mkplAd(get(), id = id, filter = filter, type = type)
 
     private fun mkplAdSupply(id: String, filter: String, type: MkplDealSide) =
-        mkplAd(AD_SUPPLY_BOLT1, id = id, filter = filter, type = type)
+        mkplAd(get(), id = id, filter = filter, type = type)
 
     private fun mkplAd(base: MkplAd, id: String, filter: String, type: MkplDealSide) = base.copy(
         id = MkplAdId(id),

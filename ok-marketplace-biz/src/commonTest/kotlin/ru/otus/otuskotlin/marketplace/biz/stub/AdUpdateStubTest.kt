@@ -6,15 +6,14 @@ import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.stubs.MkplStubs
-import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 import kotlin.test.Test
 import kotlin.test.assertEquals
 
 @OptIn(ExperimentalCoroutinesApi::class)
-class AdCreateStubTest {
+class AdUpdateStubTest {
 
     private val processor = MkplAdProcessor()
-    val id = MkplAdId("666")
+    val id = MkplAdId("777")
     val title = "title 666"
     val description = "desc 666"
     val dealSide = MkplDealSide.DEMAND
@@ -24,7 +23,7 @@ class AdCreateStubTest {
     fun create() = runTest {
 
         val ctx = MkplContext(
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             state = MkplState.NONE,
             workMode = MkplWorkMode.STUB,
             stubCase = MkplStubs.SUCCESS,
@@ -37,7 +36,7 @@ class AdCreateStubTest {
             ),
         )
         processor.exec(ctx)
-        assertEquals(MkplAdStub.get().id, ctx.adResponse.id)
+        assertEquals(id, ctx.adResponse.id)
         assertEquals(title, ctx.adResponse.title)
         assertEquals(description, ctx.adResponse.description)
         assertEquals(dealSide, ctx.adResponse.adType)
@@ -45,9 +44,24 @@ class AdCreateStubTest {
     }
 
     @Test
+    fun badId() = runTest {
+        val ctx = MkplContext(
+            command = MkplCommand.UPDATE,
+            state = MkplState.NONE,
+            workMode = MkplWorkMode.STUB,
+            stubCase = MkplStubs.BAD_ID,
+            adRequest = MkplAd(),
+        )
+        processor.exec(ctx)
+        assertEquals(MkplAd(), ctx.adResponse)
+        assertEquals("id", ctx.errors.firstOrNull()?.field)
+        assertEquals("validation", ctx.errors.firstOrNull()?.group)
+    }
+
+    @Test
     fun badTitle() = runTest {
         val ctx = MkplContext(
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             state = MkplState.NONE,
             workMode = MkplWorkMode.STUB,
             stubCase = MkplStubs.BAD_TITLE,
@@ -67,7 +81,7 @@ class AdCreateStubTest {
     @Test
     fun badDescription() = runTest {
         val ctx = MkplContext(
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             state = MkplState.NONE,
             workMode = MkplWorkMode.STUB,
             stubCase = MkplStubs.BAD_DESCRIPTION,
@@ -88,7 +102,7 @@ class AdCreateStubTest {
     @Test
     fun databaseError() = runTest {
         val ctx = MkplContext(
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             state = MkplState.NONE,
             workMode = MkplWorkMode.STUB,
             stubCase = MkplStubs.DB_ERROR,
@@ -104,10 +118,10 @@ class AdCreateStubTest {
     @Test
     fun badNoCase() = runTest {
         val ctx = MkplContext(
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             state = MkplState.NONE,
             workMode = MkplWorkMode.STUB,
-            stubCase = MkplStubs.BAD_ID,
+            stubCase = MkplStubs.BAD_SEARCH_STRING,
             adRequest = MkplAd(
                 id = id,
                 title = title,
