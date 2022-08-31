@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.markeplace.springapp
+package ru.otus.otuskotlin.marketplace.springapp
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.runApplication

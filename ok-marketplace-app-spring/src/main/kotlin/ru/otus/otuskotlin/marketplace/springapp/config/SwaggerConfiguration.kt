@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.markeplace.springapp.config
+package ru.otus.otuskotlin.marketplace.springapp.config
 
 import org.springdoc.core.SpringDocConfigProperties
 import org.springdoc.core.SpringDocConfiguration
