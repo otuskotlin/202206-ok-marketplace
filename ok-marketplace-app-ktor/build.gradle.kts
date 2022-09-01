@@ -56,6 +56,7 @@ kotlin {
 
                 implementation(project(":ok-marketplace-common"))
                 implementation(project(":ok-marketplace-api-v2-kmp"))
+                implementation(project(":ok-marketplace-biz"))
                 implementation(project(":ok-marketplace-mappers-v2"))
                 implementation(project(":ok-marketplace-stubs"))
 

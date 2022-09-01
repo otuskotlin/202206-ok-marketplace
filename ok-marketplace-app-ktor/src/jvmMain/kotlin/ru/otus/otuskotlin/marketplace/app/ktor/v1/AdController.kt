@@ -5,46 +5,35 @@ import io.ktor.server.request.*
 import io.ktor.server.response.*
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
 import ru.otus.otuskotlin.marketplace.mappers.v1.*
-import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
+import kotlinx.datetime.Clock
+import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 
-suspend fun ApplicationCall.createAd() {
-    val request = receive<AdCreateRequest>()
-    val context = MkplContext()
-    context.fromTransport(request)
-    context.adResponse = MkplAdStub.get()
-    respond(context.toTransportCreate())
+suspend inline fun <reified T : Any, reified R : Any> ApplicationCall.process(
+    processor: MkplAdProcessor,
+    fromTransport: MkplContext.(request: T) -> Unit,
+    toTransport: MkplContext.() -> R
+) {
+    val ctx = MkplContext(
+        timeStart = Clock.System.now(),
+    )
+    val request = receive<T>()
+    ctx.fromTransport(request)
+    processor.exec(ctx)
+    respond(ctx.toTransport())
 }
 
-suspend fun ApplicationCall.readAd() {
-    val request = receive<AdReadRequest>()
-    val context = MkplContext()
-    context.fromTransport(request)
-    context.adResponse = MkplAdStub.get()
-    respond(context.toTransportRead())
-}
+suspend fun ApplicationCall.createAd(processor: MkplAdProcessor) =
+    process<AdCreateRequest, AdCreateResponse>(processor, { fromTransport(it) }, { toTransportCreate()})
 
-suspend fun ApplicationCall.updateAd() {
-    val request = receive<AdUpdateRequest>()
-    val context = MkplContext()
-    context.fromTransport(request)
-    context.adResponse = MkplAdStub.get()
-    respond(context.toTransportUpdate())
-}
+suspend fun ApplicationCall.readAd(processor: MkplAdProcessor) =
+    process<AdReadRequest, AdReadResponse>(processor, { fromTransport(it) }, { toTransportRead()})
 
-suspend fun ApplicationCall.deleteAd() {
-    val request = receive<AdDeleteRequest>()
-    val context = MkplContext()
-    context.fromTransport(request)
-    context.adResponse = MkplAdStub.get()
-    respond(context.toTransportDelete())
-}
+suspend fun ApplicationCall.updateAd(processor: MkplAdProcessor) =
+    process<AdUpdateRequest, AdUpdateResponse>(processor, { fromTransport(it) }, { toTransportUpdate()})
 
-suspend fun ApplicationCall.searchAd() {
-    val request = receive<AdSearchRequest>()
-    val context = MkplContext()
-    context.fromTransport(request)
-    context.adsResponse.addAll(MkplAdStub.prepareSearchList("Болт", MkplDealSide.DEMAND))
-    respond(context.toTransportSearch())
-}
+suspend fun ApplicationCall.deleteAd(processor: MkplAdProcessor) =
+    process<AdDeleteRequest, AdDeleteResponse>(processor, { fromTransport(it) }, { toTransportDelete()})
+
+suspend fun ApplicationCall.searchAd(processor: MkplAdProcessor) =
+    process<AdSearchRequest, AdSearchResponse>(processor, { fromTransport(it) }, { toTransportSearch()})

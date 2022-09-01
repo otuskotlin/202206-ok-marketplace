@@ -7,6 +7,7 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Offer
+import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 
 @Suppress("unused") // Referenced in application.conf
 fun Application.module() {
@@ -26,14 +27,16 @@ fun Application.module() {
         anyHost() // TODO remove
     }
 
+    val processor = MkplAdProcessor()
+
     routing {
         get("/") {
             call.respondText("Hello, world!")
         }
 
         route("v2") {
-            v2Ad()
-            v2Offer()
+            v2Ad(processor)
+            v2Offer(processor)
         }
     }
 }
