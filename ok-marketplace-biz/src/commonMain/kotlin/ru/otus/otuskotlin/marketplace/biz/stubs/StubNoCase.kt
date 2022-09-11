@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.biz.workers
+package ru.otus.otuskotlin.marketplace.biz.stubs
 
 import ru.otus.otuskotlin.marketplace.cor.ICorChainDsl
 import ru.otus.otuskotlin.marketplace.cor.worker

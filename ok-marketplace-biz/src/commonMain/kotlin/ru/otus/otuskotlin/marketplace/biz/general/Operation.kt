@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.biz.groups
+package ru.otus.otuskotlin.marketplace.biz.general
 
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
