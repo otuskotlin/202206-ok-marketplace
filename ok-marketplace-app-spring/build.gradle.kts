@@ -30,6 +30,9 @@ dependencies {
     // Stubs
     implementation(project(":ok-marketplace-stubs"))
 
+    // business-logic
+    implementation(project(":ok-marketplace-biz"))
+
     // tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 

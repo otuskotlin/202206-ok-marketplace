@@ -11,6 +11,7 @@ import org.slf4j.event.Level
 import ru.otus.otuskotlin.marketplace.api.v1.apiV1Mapper
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Offer
+import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 
 @Suppress("unused") // Referenced in application.conf
 fun main() {
@@ -45,10 +46,11 @@ fun Application.moduleJvm() {
     install(CallLogging) {
         level = Level.INFO
     }
+    val processor = MkplAdProcessor()
     routing {
         route("v1") {
-            v1Ad()
-            v1Offer()
+            v1Ad(processor)
+            v1Offer(processor)
         }
     }
 }
