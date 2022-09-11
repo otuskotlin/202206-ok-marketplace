@@ -1,39 +1,21 @@
 package ru.otus.otuskotlin.marketplace.app.ktor.v1
 
 import io.ktor.server.application.*
-import io.ktor.server.request.*
-import io.ktor.server.response.*
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
-import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.mappers.v1.*
-import kotlinx.datetime.Clock
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
-
-suspend inline fun <reified T : Any, reified R : Any> ApplicationCall.process(
-    processor: MkplAdProcessor,
-    fromTransport: MkplContext.(request: T) -> Unit,
-    toTransport: MkplContext.() -> R
-) {
-    val ctx = MkplContext(
-        timeStart = Clock.System.now(),
-    )
-    val request = receive<T>()
-    ctx.fromTransport(request)
-    processor.exec(ctx)
-    respond(ctx.toTransport())
-}
+import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
 
 suspend fun ApplicationCall.createAd(processor: MkplAdProcessor) =
-    process<AdCreateRequest, AdCreateResponse>(processor, { fromTransport(it) }, { toTransportCreate()})
+    processV1<AdCreateRequest, AdCreateResponse>(processor, MkplCommand.CREATE)
 
 suspend fun ApplicationCall.readAd(processor: MkplAdProcessor) =
-    process<AdReadRequest, AdReadResponse>(processor, { fromTransport(it) }, { toTransportRead()})
+    processV1<AdReadRequest, AdReadResponse>(processor, MkplCommand.READ)
 
 suspend fun ApplicationCall.updateAd(processor: MkplAdProcessor) =
-    process<AdUpdateRequest, AdUpdateResponse>(processor, { fromTransport(it) }, { toTransportUpdate()})
+    processV1<AdUpdateRequest, AdUpdateResponse>(processor, MkplCommand.UPDATE)
 
 suspend fun ApplicationCall.deleteAd(processor: MkplAdProcessor) =
-    process<AdDeleteRequest, AdDeleteResponse>(processor, { fromTransport(it) }, { toTransportDelete()})
+    processV1<AdDeleteRequest, AdDeleteResponse>(processor, MkplCommand.DELETE)
 
 suspend fun ApplicationCall.searchAd(processor: MkplAdProcessor) =
-    process<AdSearchRequest, AdSearchResponse>(processor, { fromTransport(it) }, { toTransportSearch()})
+    processV1<AdSearchRequest, AdSearchResponse>(processor, MkplCommand.SEARCH)

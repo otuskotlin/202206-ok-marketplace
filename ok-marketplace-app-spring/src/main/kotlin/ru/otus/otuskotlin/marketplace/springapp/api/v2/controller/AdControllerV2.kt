@@ -1,67 +1,33 @@
 package ru.otus.otuskotlin.marketplace.springapp.api.v2.controller
 
-import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
 import org.springframework.web.bind.annotation.*
 import ru.otus.otuskotlin.marketplace.api.v2.models.*
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
-import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.mappers.v2.*
+import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
 
 @RestController
 @RequestMapping("v2/ad")
 class AdControllerV2(
-    private val processor: MkplAdProcessor
+    private val processor: MkplAdProcessor,
 ) {
 
     @PostMapping("create")
-    fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportCreate()
-    }
+    suspend fun createAd(@RequestBody request: String): String =
+        processV2<AdCreateRequest, AdCreateResponse>(processor, MkplCommand.CREATE, requestString = request)
 
     @PostMapping("read")
-    fun readAd(@RequestBody request: AdReadRequest): AdReadResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportRead()
-    }
+    suspend fun readAd(@RequestBody request: String): String =
+        processV2<AdReadRequest, AdReadResponse>(processor, MkplCommand.READ, requestString = request)
 
     @RequestMapping("update", method = [RequestMethod.POST])
-    fun updateAd(@RequestBody request: AdUpdateRequest): AdUpdateResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportUpdate()
-    }
+    suspend fun updateAd(@RequestBody request: String): String =
+        processV2<AdUpdateRequest, AdUpdateResponse>(processor, MkplCommand.UPDATE, requestString = request)
 
     @PostMapping("delete")
-    fun deleteAd(@RequestBody request: AdDeleteRequest): AdDeleteResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportDelete()
-    }
+    suspend fun deleteAd(@RequestBody request: String): String =
+        processV2<AdDeleteRequest, AdDeleteResponse>(processor, MkplCommand.DELETE, requestString = request)
 
     @PostMapping("search")
-    fun searchAd(@RequestBody request: AdSearchRequest): AdSearchResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportSearch()
-
-    }
+    suspend fun searchAd(@RequestBody request: String): String =
+        processV2<AdSearchRequest, AdSearchResponse>(processor, MkplCommand.SEARCH, requestString = request)
 }
