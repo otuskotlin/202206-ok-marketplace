@@ -19,6 +19,11 @@ data class MkplContext(
     var timeStart: Instant = Instant.NONE,
     var adRequest: MkplAd = MkplAd(),
     var adFilterRequest: MkplAdFilter = MkplAdFilter(),
+
+    var adValidating: MkplAd = MkplAd(),
+    var adValidated: MkplAd = MkplAd(),
+
+
     var adResponse: MkplAd = MkplAd(),
     var adsResponse: MutableList<MkplAd> = mutableListOf(),
 )
