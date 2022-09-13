@@ -120,6 +120,7 @@ kotlin {
 
                 // Stubs
                 implementation(project(":ok-marketplace-stubs"))
+                implementation(project(":ok-marketplace-biz"))
             }
         }
         @Suppress("UNUSED_VARIABLE")

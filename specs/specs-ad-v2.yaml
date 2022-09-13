@@ -251,6 +251,11 @@ components:
         - registeredOnly
         - public
 
+    AdInitResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
+
+
     AdCreateObject:
       allOf:
         - $ref: '#/components/schemas/BaseAd'
