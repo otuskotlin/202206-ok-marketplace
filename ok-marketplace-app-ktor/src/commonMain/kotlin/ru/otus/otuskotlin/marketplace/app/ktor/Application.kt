@@ -5,6 +5,8 @@ import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
+import io.ktor.websocket.*
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
@@ -13,6 +15,7 @@ import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 fun Application.module() {
     // Generally not needed as it is replaced by a `routing`
     install(Routing)
+    install(WebSockets)
 
 //    install(DefaultHeaders)
 
@@ -37,6 +40,17 @@ fun Application.module() {
         route("v2") {
             v2Ad(processor)
             v2Offer(processor)
+        }
+        webSocket("/ws/v2") {
+            for (frame in incoming) {
+                frame as? Frame.Text ?: continue
+                val receivedText = frame.readText()
+                if (receivedText.equals("bye", ignoreCase = true)) {
+                    close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
+                } else {
+                    send(Frame.Text("Hi, $receivedText!"))
+                }
+            }
         }
     }
 }
