@@ -7,6 +7,8 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorUserSession
+import ru.otus.otuskotlin.marketplace.app.ktor.v2.mpWsHandlerV2
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
@@ -31,6 +33,7 @@ fun Application.module() {
     }
 
     val processor = MkplAdProcessor()
+    val sessionsV2 = mutableSetOf<KtorUserSession>()
 
     routing {
         get("/") {
@@ -42,15 +45,10 @@ fun Application.module() {
             v2Offer(processor)
         }
         webSocket("/ws/v2") {
-            for (frame in incoming) {
-                frame as? Frame.Text ?: continue
-                val receivedText = frame.readText()
-                if (receivedText.equals("bye", ignoreCase = true)) {
-                    close(CloseReason(CloseReason.Codes.NORMAL, "Client said BYE"))
-                } else {
-                    send(Frame.Text("Hi, $receivedText!"))
-                }
-            }
+            mpWsHandlerV2(
+                processor = processor,
+                sessions = sessionsV2,
+            )
         }
     }
 }
