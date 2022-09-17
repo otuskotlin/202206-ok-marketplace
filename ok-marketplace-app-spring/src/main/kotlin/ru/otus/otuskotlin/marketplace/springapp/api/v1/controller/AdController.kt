@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.marketplace.springapp.api.v1.controller
 
+import kotlinx.coroutines.runBlocking
 import org.springframework.web.bind.annotation.*
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
@@ -10,9 +11,15 @@ import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
 class AdController(
     private val processor: MkplAdProcessor,
 ) {
+    // По документации suspend функции должны работать корректно.
+    // На практике не работают.
+    // Поэтому отключил на create suspend, остальные пока оставляю,
+    // надеюсь разобраться позже
+
     @PostMapping("create")
-    suspend fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse =
-        processV1(processor, MkplCommand.CREATE, request = request)
+    fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse = runBlocking {
+        processV1<AdCreateRequest, AdCreateResponse>(processor, MkplCommand.CREATE, request = request)
+    }
 
     @PostMapping("read")
     suspend fun readAd(@RequestBody request: AdReadRequest): AdReadResponse =

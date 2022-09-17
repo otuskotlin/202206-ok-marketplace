@@ -12,7 +12,7 @@ dependencies {
     val coroutinesVersion: String by project
 
     implementation("org.springframework.boot:spring-boot-starter-actuator") // info; refresh; springMvc output
-    implementation("org.springframework.boot:spring-boot-starter-web") // Controller, Service, etc..
+    implementation("org.springframework.boot:spring-boot-starter-webflux") // Controller, Service, etc..
     implementation("org.springframework.boot:spring-boot-starter-websocket") // Controller, Service, etc..
     implementation("org.springdoc:springdoc-openapi-ui:$springdocOpenapiUiVersion")
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // from models to json and Vice versa
@@ -42,8 +42,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-    testImplementation("org.springframework.boot:spring-boot-starter-webflux") // Controller, Service, etc..
-    testImplementation("com.ninja-squad:springmockk:3.0.1") // mockking beans
+    testImplementation("com.ninja-squad:springmockk:3.1.1") // mockking beans
 }
 
 tasks {

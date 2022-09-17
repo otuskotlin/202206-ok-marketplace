@@ -1,6 +1,5 @@
 package ru.otus.otuskotlin.marketplace.springapp.api.v1.controller
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.ninjasquad.springmockk.MockkBean
 import io.mockk.coVerify
 import org.junit.jupiter.api.Test
@@ -11,6 +10,7 @@ import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.content
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.status
+import ru.otus.otuskotlin.marketplace.api.v1.apiV1Mapper
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdCreateRequest
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdCreateResponse
 import ru.otus.otuskotlin.marketplace.api.v1.models.AdResponseObject
@@ -23,8 +23,7 @@ internal class AdControllerTest {
     @Autowired
     private lateinit var mvc: MockMvc
 
-    @Autowired
-    private lateinit var mapper: ObjectMapper
+    private val mapper = apiV1Mapper
 
     @MockkBean(relaxUnitFun = true)
     private lateinit var processor: MkplAdProcessor
@@ -34,12 +33,12 @@ internal class AdControllerTest {
         val request = mapper.writeValueAsString(AdCreateRequest())
         val response = mapper.writeValueAsString(
             AdCreateResponse(
-                responseType = "create",
                 result = ResponseResult.ERROR,
-                ad = AdResponseObject()
+//                ad = AdResponseObject()
             )
         )
 
+        println("RESP: $response")
         mvc
             .perform(
                 post("/v1/ad/create")
@@ -47,7 +46,10 @@ internal class AdControllerTest {
                     .content(request)
             )
             .andExpect(status().isOk)
-            .andExpect(content().json(response))
+            .andDo {
+                println("RESSS: ${it.response.contentAsString}")
+            }
+            .andExpect(content().json(response, false))
 
         coVerify { processor.exec(any()) }
     }
