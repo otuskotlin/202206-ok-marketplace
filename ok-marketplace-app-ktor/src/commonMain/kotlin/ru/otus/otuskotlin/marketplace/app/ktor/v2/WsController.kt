@@ -5,6 +5,7 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import ru.otus.otuskotlin.marketplace.api.v2.apiV2Mapper
 import ru.otus.otuskotlin.marketplace.api.v2.models.IRequest
+import ru.otus.otuskotlin.marketplace.api.v2.models.IResponse
 import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorUserSession
 import ru.otus.otuskotlin.marketplace.app.ktor.base.mpWsHandler
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
@@ -18,8 +19,8 @@ suspend fun WebSocketSession.mpWsHandlerV2(
 ) = this.mpWsHandler(
     processor = processor,
     sessions = sessions,
-    fromTransport = { fromTransport(apiV2Mapper.decodeFromString<IRequest>(it)) },
-    toTransportInit = { apiV2Mapper.encodeToString(toTransportInit()) },
+    fromTransport = { fromTransport(apiV2Mapper.decodeFromString(it) as IRequest) },
+    toTransportInit = { apiV2Mapper.encodeToString(toTransportInit() as IResponse) },
     toTransportBiz = { apiV2Mapper.encodeToString(toTransportAd()) },
 )
 

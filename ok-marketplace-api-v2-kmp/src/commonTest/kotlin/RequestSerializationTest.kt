@@ -6,6 +6,7 @@ import ru.otus.otuskotlin.marketplace.api.v2.models.*
 import kotlin.test.Test
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
+import kotlin.test.assertIs
 
 class RequestSerializationTest {
     private val request: IRequest = AdCreateRequest(
@@ -22,6 +23,24 @@ class RequestSerializationTest {
             visibility = AdVisibility.PUBLIC,
         )
     )
+
+    private val jsonString = """
+        {
+          "requestType": "create",
+          "requestId": "12345",
+          "ad": {
+            "title": "Болт",
+            "description": "КРУТЕЙШИЙ",
+            "ownerId": "9435",
+            "visibility": "public",
+            "adType": "demand"
+          },
+          "debug": {
+            "mode": "test"
+          }
+        }
+
+    """.trimIndent()
 
     @Test
     fun serialize() {
@@ -46,5 +65,11 @@ class RequestSerializationTest {
         val obj = apiV2Mapper.decodeFromString(json) as AdCreateRequest
 
         assertEquals(request, obj)
+    }
+
+    @Test
+    fun deserializeFromString() {
+        val obj = apiV2Mapper.decodeFromString(jsonString) as IRequest
+        assertIs<AdCreateRequest>(obj)
     }
 }
