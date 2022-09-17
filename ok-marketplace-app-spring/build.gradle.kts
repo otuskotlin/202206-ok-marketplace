@@ -18,8 +18,10 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // from models to json and Vice versa
     implementation("org.jetbrains.kotlin:kotlin-reflect") // for spring-boot app
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8") // for spring-boot app
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
-    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:$coroutinesVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:${coroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:${coroutinesVersion}")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactive:${coroutinesVersion}")
+    implementation("io.projectreactor.kotlin:reactor-kotlin-extensions")
 
     // transport models
     implementation(project(":ok-marketplace-common"))
@@ -43,6 +45,7 @@ dependencies {
 
     testImplementation("io.kotest:kotest-runner-junit5:$kotestVersion")
     testImplementation("com.ninja-squad:springmockk:3.1.1") // mockking beans
+    testImplementation("org.assertj:assertj-core:3.23.1")
 }
 
 tasks {
@@ -53,15 +56,6 @@ tasks {
         }
     }
 }
-
-/*sourceSets {
-    main {
-        resources {
-            srcDirs("$rootDir/specs")
-            println(srcDirs)
-        }
-    }
-}*/
 
 tasks.withType<Test> {
     useJUnitPlatform()
