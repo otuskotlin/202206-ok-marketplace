@@ -9,6 +9,7 @@ plugins {
 dependencies {
     val kotestVersion: String by project
     val springdocOpenapiUiVersion: String by project
+    val serializationVersion: String by project
 
     implementation("org.springframework.boot:spring-boot-starter-actuator") // info; refresh; springMvc output
     implementation("org.springframework.boot:spring-boot-starter-web") // Controller, Service, etc..
@@ -17,6 +18,8 @@ dependencies {
     implementation("com.fasterxml.jackson.module:jackson-module-kotlin") // from models to json and Vice versa
     implementation("org.jetbrains.kotlin:kotlin-reflect") // for spring-boot app
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8") // for spring-boot app
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
 
     // transport models
     implementation(project(":ok-marketplace-common"))
