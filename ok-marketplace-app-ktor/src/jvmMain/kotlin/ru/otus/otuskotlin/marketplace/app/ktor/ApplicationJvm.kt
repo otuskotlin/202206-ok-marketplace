@@ -27,10 +27,10 @@ fun main() {
         config = conf
         println("File read")
 
-//        module {
-//            module()
-//            moduleJvm()
-//        }
+        module {
+            module()
+            moduleJvm()
+        }
         connector {
             port = conf.tryGetString("ktor.deployment.port")?.toIntOrNull() ?: 8080
             host = conf.tryGetString("ktor.deployment.host") ?: "0.0.0.0"
