@@ -1,66 +1,40 @@
 package ru.otus.otuskotlin.marketplace.springapp.api.v1.controller
 
 import kotlinx.coroutines.runBlocking
-import kotlinx.datetime.Clock
 import org.springframework.web.bind.annotation.*
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
-import ru.otus.otuskotlin.marketplace.common.MkplContext
-import ru.otus.otuskotlin.marketplace.mappers.v1.*
+import ru.otus.otuskotlin.marketplace.common.models.MkplCommand
 
 @RestController
 @RequestMapping("v1/ad")
 class AdController(
-    private val processor: MkplAdProcessor
+    private val processor: MkplAdProcessor,
 ) {
+    // По документации suspend функции должны работать корректно.
+    // На практике не работают.
+    // Поэтому отключил на create suspend, остальные пока оставляю,
+    // надеюсь разобраться позже
+
     @PostMapping("create")
-    fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportCreate()
+    fun createAd(@RequestBody request: AdCreateRequest): AdCreateResponse = runBlocking {
+        processV1<AdCreateRequest, AdCreateResponse>(processor, MkplCommand.CREATE, request = request)
     }
 
     @PostMapping("read")
-    fun readAd(@RequestBody request: AdReadRequest): AdReadResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportRead()
-
-    }
+    suspend fun readAd(@RequestBody request: AdReadRequest): AdReadResponse =
+        processV1(processor, MkplCommand.READ, request = request)
 
     @RequestMapping("update", method = [RequestMethod.POST])
-    fun updateAd(@RequestBody request: AdUpdateRequest): AdUpdateResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportUpdate()
-    }
+    suspend fun updateAd(@RequestBody request: AdUpdateRequest): AdUpdateResponse =
+        processV1(processor, MkplCommand.UPDATE, request = request)
+
 
     @PostMapping("delete")
-    fun deleteAd(@RequestBody request: AdDeleteRequest): AdDeleteResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportDelete()
-    }
+    suspend fun deleteAd(@RequestBody request: AdDeleteRequest): AdDeleteResponse =
+        processV1(processor, MkplCommand.DELETE, request = request)
 
     @PostMapping("search")
-    fun searchAd(@RequestBody request: AdSearchRequest): AdSearchResponse {
-        val ctx = MkplContext(
-            timeStart = Clock.System.now(),
-        )
-        ctx.fromTransport(request)
-        runBlocking { processor.exec(ctx) }
-        return ctx.toTransportSearch()
-    }
+    suspend fun searchAd(@RequestBody request: AdSearchRequest): AdSearchResponse =
+        processV1(processor, MkplCommand.SEARCH, request = request)
 }
