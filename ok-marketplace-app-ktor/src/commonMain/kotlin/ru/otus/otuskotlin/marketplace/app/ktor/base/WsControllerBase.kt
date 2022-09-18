@@ -20,10 +20,10 @@ suspend fun WebSocketSession.mpWsHandler(
     fromTransport: MkplContext.(request: String) -> Unit,
     toTransportBiz: MkplContext.() -> String,
     toTransportInit: MkplContext.() -> String,
+    apiVersion: String,
 ) {
-    val userSession = KtorUserSession(this)
+    val userSession = KtorUserSession(this, apiVersion)
     sessions.add(userSession)
-    println(sessions.size)
     run {
         val ctx = MkplContext(
             timeStart = Clock.System.now()
@@ -45,7 +45,7 @@ suspend fun WebSocketSession.mpWsHandler(
                 processor.exec(ctx)
                 // Если произошли изменения, то ответ отправляется всем
                 if (ctx.isUpdatableCommand()) {
-                    sessions.forEach {
+                    sessions.filter { it.apiVersion == apiVersion }.forEach {
                         it.fwSession.send(Frame.Text(ctx.toTransportBiz()))
                     }
                 } else {

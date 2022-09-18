@@ -22,5 +22,6 @@ suspend fun WebSocketSession.mpWsHandlerV2(
     fromTransport = { fromTransport(apiV2Mapper.decodeFromString(it) as IRequest) },
     toTransportInit = { apiV2Mapper.encodeToString(toTransportInit() as IResponse) },
     toTransportBiz = { apiV2Mapper.encodeToString(toTransportAd()) },
+    apiVersion = "v2",
 )
 

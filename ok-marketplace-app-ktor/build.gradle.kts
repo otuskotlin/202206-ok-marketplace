@@ -24,8 +24,8 @@ repositories {
 }
 
 application {
-//    mainClass.set("io.ktor.server.cio.EngineMain")
-    mainClass.set("ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt")
+    mainClass.set("io.ktor.server.cio.EngineMain")
+//    mainClass.set("ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt")
 }
 
 kotlin {

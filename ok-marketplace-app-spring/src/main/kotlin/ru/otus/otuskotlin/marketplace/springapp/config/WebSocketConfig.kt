@@ -16,11 +16,10 @@ class WebSocketConfig(
     private val processor: MkplAdProcessor,
 ) : WebSocketConfigurer {
 
-    private val sessionsV1 = mutableMapOf<String, SpringWsSession>()
-    private val sessionsV2 = mutableMapOf<String, SpringWsSession>()
+    private val sessions = mutableMapOf<String, SpringWsSession>()
 
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
-        registry.addHandler(WsAdHandlerV1(processor, sessionsV1), "/ws/v1").setAllowedOrigins("*")
-        registry.addHandler(WsAdHandlerV2(processor, sessionsV2), "/ws/v2").setAllowedOrigins("*")
+        registry.addHandler(WsAdHandlerV1(processor, sessions), "/ws/v1").setAllowedOrigins("*")
+        registry.addHandler(WsAdHandlerV2(processor, sessions), "/ws/v2").setAllowedOrigins("*")
     }
 }

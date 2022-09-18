@@ -8,6 +8,7 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
 import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorUserSession
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorWsSessions
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.mpWsHandlerV2
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Offer
@@ -33,7 +34,6 @@ fun Application.module() {
     }
 
     val processor = MkplAdProcessor()
-    val sessionsV2 = mutableSetOf<KtorUserSession>()
 
     routing {
         get("/") {
@@ -47,7 +47,7 @@ fun Application.module() {
         webSocket("/ws/v2") {
             mpWsHandlerV2(
                 processor = processor,
-                sessions = sessionsV2,
+                sessions = KtorWsSessions.sessions,
             )
         }
     }

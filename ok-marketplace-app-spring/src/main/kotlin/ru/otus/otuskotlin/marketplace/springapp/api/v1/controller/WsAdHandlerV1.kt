@@ -20,4 +20,5 @@ class WsAdHandlerV1(
     fromTransport = { fromTransport(apiV1Mapper.readValue(it, IRequest::class.java)) },
     toTransportBiz = { apiV1Mapper.writeValueAsString(toTransportAd()) },
     toTransportInit = { apiV1Mapper.writeValueAsString(toTransportInit()) },
+    apiVersion = "v1",
 )

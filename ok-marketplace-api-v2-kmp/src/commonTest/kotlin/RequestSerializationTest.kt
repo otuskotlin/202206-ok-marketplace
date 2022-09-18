@@ -24,24 +24,6 @@ class RequestSerializationTest {
         )
     )
 
-    private val jsonString = """
-        {
-          "requestType": "create",
-          "requestId": "12345",
-          "ad": {
-            "title": "Болт",
-            "description": "КРУТЕЙШИЙ",
-            "ownerId": "9435",
-            "visibility": "public",
-            "adType": "demand"
-          },
-          "debug": {
-            "mode": "test"
-          }
-        }
-
-    """.trimIndent()
-
     @Test
     fun serialize() {
 //        val json = apiV2Mapper.encodeToString(AdRequestSerializer1, request)
@@ -65,11 +47,5 @@ class RequestSerializationTest {
         val obj = apiV2Mapper.decodeFromString(json) as AdCreateRequest
 
         assertEquals(request, obj)
-    }
-
-    @Test
-    fun deserializeFromString() {
-        val obj = apiV2Mapper.decodeFromString(jsonString) as IRequest
-        assertIs<AdCreateRequest>(obj)
     }
 }

@@ -23,4 +23,5 @@ class WsAdHandlerV2(
     fromTransport = { fromTransport(apiV2Mapper.decodeFromString(it) as IRequest) },
     toTransportBiz = { apiV2Mapper.encodeToString(toTransportAd()) },
     toTransportInit = { apiV2Mapper.encodeToString(toTransportInit() as IResponse) },
+    apiVersion = "v2",
 )

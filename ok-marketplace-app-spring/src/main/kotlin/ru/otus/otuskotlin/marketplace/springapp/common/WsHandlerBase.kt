@@ -17,9 +17,10 @@ abstract class WsHandlerBase(
     protected open val fromTransport: MkplContext.(request: String) -> Unit,
     protected open val toTransportBiz: MkplContext.() -> String,
     protected open val toTransportInit: MkplContext.() -> String,
+    protected open val apiVersion: String,
 ) : TextWebSocketHandler() {
     override fun afterConnectionEstablished(session: WebSocketSession) {
-        val clientSession = SpringWsSession(session)
+        val clientSession = SpringWsSession(session, apiVersion)
         sessions[session.id] = clientSession
 
         val ctx = MkplContext(
@@ -39,7 +40,7 @@ abstract class WsHandlerBase(
                 ctx.toTransportBiz()
 
                 if (ctx.isUpdatableCommand()) {
-                    sessions.values.forEach {
+                    sessions.values.filter { it.apiVersion == apiVersion }.forEach {
                         it.fwSession.sendMessage(TextMessage(ctx.toTransportBiz()))
                     }
                 } else {
