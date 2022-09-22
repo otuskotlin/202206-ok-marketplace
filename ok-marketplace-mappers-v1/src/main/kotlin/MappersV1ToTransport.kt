@@ -15,6 +15,12 @@ fun MkplContext.toTransportAd(): IResponse = when (val cmd = command) {
     MkplCommand.NONE -> throw UnknownMkplCommand(cmd)
 }
 
+fun MkplContext.toTransportInit() = AdInitResponse(
+    requestId = this.requestId.asString().takeIf { it.isNotBlank() },
+    result = if (errors.isEmpty()) ResponseResult.SUCCESS else ResponseResult.ERROR,
+    errors = errors.toTransportErrors(),
+)
+
 fun MkplContext.toTransportCreate() = AdCreateResponse(
     requestId = this.requestId.asString().takeIf { it.isNotBlank() },
     result = if (state == MkplState.FINISHING) ResponseResult.SUCCESS else ResponseResult.ERROR,

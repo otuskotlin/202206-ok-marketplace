@@ -7,8 +7,12 @@ import io.ktor.server.engine.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
+import io.ktor.server.websocket.*
 import org.slf4j.event.Level
 import ru.otus.otuskotlin.marketplace.api.v1.apiV1Mapper
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorUserSession
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorWsSessions
+import ru.otus.otuskotlin.marketplace.app.ktor.v1.mpWsHandlerV1
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
@@ -26,12 +30,16 @@ fun main() {
             module()
             moduleJvm()
         }
-    }).apply {
-        addShutdownHook {
-            println("Stop is requested")
-            stop(3000, 5000)
-            println("Exiting")
+        connector {
+            port =  8080
+            host =  "0.0.0.0"
         }
+    }).apply {
+//        addShutdownHook {
+//            println("Stop is requested")
+//            stop(3000, 5000)
+//            println("Exiting")
+//        }
         start(true)
     }
 }
@@ -51,6 +59,9 @@ fun Application.moduleJvm() {
         route("v1") {
             v1Ad(processor)
             v1Offer(processor)
+        }
+        webSocket("/ws/v1") {
+            mpWsHandlerV1(processor, KtorWsSessions.sessions)
         }
     }
 }

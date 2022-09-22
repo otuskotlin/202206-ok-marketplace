@@ -204,6 +204,7 @@ components:
           delete: '#/components/schemas/AdDeleteResponse'
           search: '#/components/schemas/AdSearchResponse'
           offers: '#/components/schemas/AdOffersResponse'
+          init: '#/components/schemas/AdInitResponse'
 
 
     UserId:
@@ -245,6 +246,10 @@ components:
         - ownerOnly
         - registeredOnly
         - public
+
+    AdInitResponse:
+      allOf:
+        - $ref: '#/components/schemas/IResponse'
 
     AdCreateObject:
       allOf:
