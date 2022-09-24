@@ -27,7 +27,7 @@ dependencies {
     implementation(project(":ok-marketplace-api-v2-kmp"))
 
     // Services
-    implementation(project(":ok-marketplace-services"))
+    implementation(project(":ok-marketplace-biz"))
 
     // Stubs
     implementation(project(":ok-marketplace-stubs"))

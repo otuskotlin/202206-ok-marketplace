@@ -9,7 +9,7 @@ import ru.otus.otuskotlin.marketplace.api.v2.responses.apiV2ResponseSerialize
 import ru.otus.otuskotlin.marketplace.app.rabbit.RabbitProcessorBase
 import ru.otus.otuskotlin.marketplace.app.rabbit.config.RabbitConfig
 import ru.otus.otuskotlin.marketplace.app.rabbit.config.RabbitExchangeConfiguration
-import ru.otus.otuskotlin.marketplace.backend.services.AdService
+import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.helpers.addError
 import ru.otus.otuskotlin.marketplace.common.helpers.asMkplError
@@ -20,7 +20,7 @@ import ru.otus.otuskotlin.marketplace.mappers.v2.toTransportAd
 class RabbitDirectProcessorV2(
     config: RabbitConfig,
     processorConfig: RabbitExchangeConfiguration,
-    private val service: AdService,
+    private val processor: MkplAdProcessor = MkplAdProcessor(),
 ) : RabbitProcessorBase(config, processorConfig) {
 
     private val context = MkplContext()
@@ -35,7 +35,7 @@ class RabbitDirectProcessorV2(
             context.fromTransport(it)
         }
 
-        val response = service.exec(context).run { context.toTransportAd() }
+        val response = processor.exec(context).run { context.toTransportAd() }
         apiV2ResponseSerialize(response).also {
             println("Publishing $response to ${processorConfig.exchange} exchange for keyOut ${processorConfig.keyOut}")
             basicPublish(processorConfig.exchange, processorConfig.keyOut, null, it.toByteArray())

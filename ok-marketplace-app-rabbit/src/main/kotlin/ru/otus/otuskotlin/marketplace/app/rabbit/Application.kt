@@ -5,11 +5,11 @@ import ru.otus.otuskotlin.marketplace.app.rabbit.config.RabbitExchangeConfigurat
 import ru.otus.otuskotlin.marketplace.app.rabbit.controller.RabbitController
 import ru.otus.otuskotlin.marketplace.app.rabbit.processor.RabbitDirectProcessor
 import ru.otus.otuskotlin.marketplace.app.rabbit.processor.RabbitDirectProcessorV2
-import ru.otus.otuskotlin.marketplace.backend.services.AdService
+import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 
 fun main() {
     val config = RabbitConfig()
-    val service = AdService()
+    val adProcessor = MkplAdProcessor()
 
     val producerConfig = RabbitExchangeConfiguration(
         keyIn = "in-v1",
@@ -33,7 +33,7 @@ fun main() {
         RabbitDirectProcessor(
             config = config,
             processorConfig = producerConfig,
-            service = service
+            processor = adProcessor
         )
     }
 
@@ -41,7 +41,7 @@ fun main() {
         RabbitDirectProcessorV2(
             config = config,
             processorConfig = producerConfigV2,
-            service = service
+            processor = adProcessor
         )
     }
     val controller by lazy {
