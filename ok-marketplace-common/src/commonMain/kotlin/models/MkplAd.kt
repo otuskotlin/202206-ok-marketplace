@@ -14,4 +14,8 @@ data class MkplAd(
     fun deepCopy(): MkplAd = copy(
         permissionsClient = permissionsClient.toMutableSet()
     )
+
+    companion object {
+        val NONE get() = MkplAd()
+    }
 }
