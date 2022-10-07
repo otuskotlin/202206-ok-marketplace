@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.marketplace.app.ktor
 
+import AdRepoInMemory
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.plugins.cors.routing.*
@@ -13,9 +14,10 @@ import ru.otus.otuskotlin.marketplace.app.ktor.v2.mpWsHandlerV2
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v2.v2Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
+import ru.otus.otuskotlin.marketplace.common.models.MkplSettings
 
 @Suppress("unused") // Referenced in application.conf
-fun Application.module() {
+fun Application.module(settings: MkplSettings? = null,) {
     // Generally not needed as it is replaced by a `routing`
     install(Routing)
     install(WebSockets)
@@ -32,8 +34,12 @@ fun Application.module() {
         allowCredentials = true
         anyHost() // TODO remove
     }
-
-    val processor = MkplAdProcessor()
+    val corSettings by lazy {
+        settings ?: MkplSettings(
+            repoTest = AdRepoInMemory()
+        )
+    }
+    val processor = MkplAdProcessor(settings = corSettings)
 
     routing {
         get("/") {
