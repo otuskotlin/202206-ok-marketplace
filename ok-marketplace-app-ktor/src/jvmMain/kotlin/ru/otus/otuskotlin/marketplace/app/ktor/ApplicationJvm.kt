@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.marketplace.app.ktor
 
+import AdRepoInMemory
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -16,6 +17,7 @@ import ru.otus.otuskotlin.marketplace.app.ktor.v1.mpWsHandlerV1
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
+import ru.otus.otuskotlin.marketplace.common.models.MkplSettings
 
 @Suppress("unused") // Referenced in application.conf
 fun main() {
@@ -44,7 +46,9 @@ fun main() {
     }
 }
 
-fun Application.moduleJvm() {
+fun Application.moduleJvm(
+    settings: MkplSettings? = null,
+) {
     install(ContentNegotiation) {
         jackson {
             setConfig(apiV1Mapper.serializationConfig)
@@ -54,7 +58,12 @@ fun Application.moduleJvm() {
     install(CallLogging) {
         level = Level.INFO
     }
-    val processor = MkplAdProcessor()
+    val corSettings by lazy {
+        settings ?: MkplSettings(
+            repoTest = AdRepoInMemory()
+        )
+    }
+    val processor = MkplAdProcessor(settings = corSettings)
     routing {
         route("v1") {
             v1Ad(processor)
