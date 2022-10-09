@@ -33,7 +33,7 @@ abstract class RepoAdDeleteTest {
         )
     }
 
-    companion object: BaseInitAds("search") {
+    companion object: BaseInitAds("delete") {
         override val initObjects: List<MkplAd> = listOf(
             createInitTestModel("delete")
         )

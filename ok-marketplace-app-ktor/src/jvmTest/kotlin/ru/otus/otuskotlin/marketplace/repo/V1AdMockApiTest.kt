@@ -36,7 +36,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()
@@ -82,7 +82,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()
@@ -125,7 +125,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()
@@ -184,7 +184,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()
@@ -229,7 +229,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()
@@ -280,7 +280,7 @@ class V1AdMockApiTest {
                 )
             }
             val settigs by lazy { MkplSettings(repoTest = repo) }
-            module()
+            module(settigs)
             moduleJvm(settigs)
         }
         val client = myClient()

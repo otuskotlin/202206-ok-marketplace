@@ -24,7 +24,7 @@ abstract class RepoAdCreateTest {
         assertEquals(emptyList(), result.errors)
     }
 
-    companion object: BaseInitAds("search") {
+    companion object: BaseInitAds("create") {
 
         private val createObj = MkplAd(
             title = "create object",
