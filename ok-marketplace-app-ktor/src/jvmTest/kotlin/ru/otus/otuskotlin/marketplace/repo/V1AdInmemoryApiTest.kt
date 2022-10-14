@@ -1,6 +1,5 @@
 package ru.otus.otuskotlin.marketplace.repo
 
-import AdRepoInMemory
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature
 import io.ktor.client.call.*
@@ -14,6 +13,7 @@ import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
 import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.repo.inmemory.AdRepoInMemory
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 

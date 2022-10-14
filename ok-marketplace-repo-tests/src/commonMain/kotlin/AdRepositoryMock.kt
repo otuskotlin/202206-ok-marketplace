@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.backend.repo.common
+package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import ru.otus.otuskotlin.marketplace.common.repo.*
 

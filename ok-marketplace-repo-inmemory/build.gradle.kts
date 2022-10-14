@@ -22,7 +22,7 @@ kotlin {
                 implementation("io.github.reactivecircus.cache4k:cache4k:$cache4kVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
                 implementation("com.benasher44:uuid:$kmpUUIDVersion")
-                implementation(project(":ok-marketplace-repo-common"))
+                implementation(project(":ok-marketplace-repo-tests"))
 
             }
         }

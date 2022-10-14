@@ -1,6 +1,7 @@
-package ru.otus.otuskotlin.marketplace.backend.repo.common
+package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.MkplAd
 import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
 import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
@@ -10,11 +11,12 @@ import kotlin.test.Test
 import kotlin.test.assertEquals
 
 
+@OptIn(ExperimentalCoroutinesApi::class)
 abstract class RepoAdSearchTest {
     abstract val repo: IAdRepository
     @Test
-    fun searchOwner() {
-        val result = runBlocking { repo.searchAd(DbAdFilterRequest(ownerId = searchOwnerId)) }
+    fun searchOwner() = runTest {
+        val result = repo.searchAd(DbAdFilterRequest(ownerId = searchOwnerId))
         assertEquals(true, result.isSuccess)
         val expected = listOf(initObjects[1], initObjects[3])
         assertEquals(expected, result.data?.sortedBy { it.id.asString() })
@@ -22,8 +24,8 @@ abstract class RepoAdSearchTest {
     }
 
     @Test
-    fun searchDealSide() {
-        val result = runBlocking { repo.searchAd(DbAdFilterRequest(dealSide = MkplDealSide.SUPPLY)) }
+    fun searchDealSide() = runTest {
+        val result = repo.searchAd(DbAdFilterRequest(dealSide = MkplDealSide.SUPPLY))
         assertEquals(true, result.isSuccess)
         val expected = listOf(initObjects[2], initObjects[4])
         assertEquals(expected, result.data?.sortedBy { it.id.asString() })

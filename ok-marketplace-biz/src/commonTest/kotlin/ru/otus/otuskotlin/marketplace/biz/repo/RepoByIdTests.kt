@@ -2,7 +2,7 @@ package ru.otus.otuskotlin.marketplace.biz.repo
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
-import ru.otus.otuskotlin.marketplace.backend.repo.common.AdRepositoryMock
+import ru.otus.otuskotlin.marketplace.backend.repo.tests.AdRepositoryMock
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.*
@@ -17,7 +17,7 @@ private val initAd = MkplAd(
     adType = MkplDealSide.DEMAND,
     visibility = MkplVisibility.VISIBLE_PUBLIC,
 )
-private val uuid = "10000000-0000-0000-0000-000000000001"
+private const val uuid = "10000000-0000-0000-0000-000000000001"
 private val repo: IAdRepository
     get() = AdRepositoryMock(
         invokeReadAd = {

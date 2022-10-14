@@ -1,7 +1,11 @@
+package ru.otus.otuskotlin.marketplace.repo.inmemory
+
 import com.benasher44.uuid.uuid4
 import io.github.reactivecircus.cache4k.Cache
+import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import ru.otus.otuskotlin.marketplace.backend.repository.inmemory.model.AdEntity
+import ru.otus.otuskotlin.marketplace.common.helpers.errorRepoConcurrency
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.*
 import kotlin.time.Duration
@@ -10,7 +14,7 @@ import kotlin.time.Duration.Companion.minutes
 class AdRepoInMemory(
     initObjects: List<MkplAd> = emptyList(),
     ttl: Duration = 2.minutes,
-    val randomUuid: () -> String = { uuid4().toString() }
+    val randomUuid: () -> String = { uuid4().toString() },
 ) : IAdRepository {
     /**
      * Инициализация кеша с установкой "времени жизни" данных после записи
@@ -18,6 +22,7 @@ class AdRepoInMemory(
     private val cache = Cache.Builder()
         .expireAfterWrite(ttl)
         .build<String, AdEntity>()
+    private val mutex: Mutex = Mutex()
 
     init {
         initObjects.forEach {
@@ -57,25 +62,52 @@ class AdRepoInMemory(
 
     override suspend fun updateAd(rq: DbAdRequest): DbAdResponse {
         val key = rq.ad.id.takeIf { it != MkplAdId.NONE }?.asString() ?: return resultErrorEmptyId
-        val oldLock = rq.ad.lock.takeIf { it != MkplAdLock.NONE }?.asString()
+        val oldLock = rq.ad.lock.takeIf { it != MkplAdLock.NONE }?.asString() ?: return resultErrorEmptyLock
         val newAd = rq.ad.copy(lock = MkplAdLock(randomUuid()))
         val entity = AdEntity(newAd)
-        val oldAd = cache.get(key)
-        oldAd?.let { cache.put(key, entity) } ?: return resultErrorNotFound
-        return DbAdResponse(
-            data = newAd,
-            isSuccess = true,
-        )
+        return mutex.withLock {
+            val oldAd = cache.get(key)
+            when {
+                oldAd == null -> resultErrorNotFound
+                oldAd.lock != oldLock -> DbAdResponse(
+                    data = oldAd.toInternal(),
+                    isSuccess = false,
+                    errors = listOf(errorRepoConcurrency(MkplAdLock(oldLock), oldAd.lock?.let { MkplAdLock(it) }))
+                )
+
+                else -> {
+                    cache.put(key, entity)
+                    DbAdResponse(
+                        data = newAd,
+                        isSuccess = true,
+                    )
+                }
+            }
+        }
     }
 
     override suspend fun deleteAd(rq: DbAdIdRequest): DbAdResponse {
         val key = rq.id.takeIf { it != MkplAdId.NONE }?.asString() ?: return resultErrorEmptyId
-        cache.invalidate(key)
-        return DbAdResponse(
-            data = null,
-            isSuccess = true,
-            errors = emptyList()
-        )
+        val oldLock = rq.lock.takeIf { it != MkplAdLock.NONE }?.asString() ?: return resultErrorEmptyLock
+        return mutex.withLock {
+            val oldAd = cache.get(key)
+            when {
+                oldAd == null -> resultErrorNotFound
+                oldAd.lock != oldLock -> DbAdResponse(
+                    data = oldAd.toInternal(),
+                    isSuccess = false,
+                    errors = listOf(errorRepoConcurrency(MkplAdLock(oldLock), oldAd.lock?.let { MkplAdLock(it) }))
+                )
+
+                else -> {
+                    cache.invalidate(key)
+                    DbAdResponse(
+                        data = oldAd.toInternal(),
+                        isSuccess = true,
+                    )
+                }
+            }
+        }
     }
 
     /**
@@ -113,8 +145,22 @@ class AdRepoInMemory(
             isSuccess = false,
             errors = listOf(
                 MkplError(
+                    code = "id-empty",
+                    group = "validation",
                     field = "id",
                     message = "Id must not be null or blank"
+                )
+            )
+        )
+        val resultErrorEmptyLock = DbAdResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                MkplError(
+                    code = "lock-empty",
+                    group = "validation",
+                    field = "lock",
+                    message = "Lock must not be null or blank"
                 )
             )
         )
@@ -123,6 +169,7 @@ class AdRepoInMemory(
             data = null,
             errors = listOf(
                 MkplError(
+                    code = "not-found",
                     field = "id",
                     message = "Not Found"
                 )

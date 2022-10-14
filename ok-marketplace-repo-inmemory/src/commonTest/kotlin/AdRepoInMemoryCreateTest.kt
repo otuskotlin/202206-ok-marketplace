@@ -1,8 +1,10 @@
-import ru.otus.otuskotlin.marketplace.backend.repo.common.RepoAdCreateTest
-import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
+package ru.otus.otuskotlin.marketplace.repo.inmemory
 
-class AdRepoInMemoryCreateTest: RepoAdCreateTest() {
-    override val repo: IAdRepository = AdRepoInMemory(
-        initObjects = initObjects
+import ru.otus.otuskotlin.marketplace.backend.repo.tests.RepoAdCreateTest
+
+class AdRepoInMemoryCreateTest : RepoAdCreateTest() {
+    override val repo = AdRepoInMemory(
+        initObjects = initObjects,
+        randomUuid = { lockNew.asString() }
     )
 }

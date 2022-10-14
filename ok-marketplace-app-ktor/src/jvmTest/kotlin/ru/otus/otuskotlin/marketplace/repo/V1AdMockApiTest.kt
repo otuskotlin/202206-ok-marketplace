@@ -12,7 +12,7 @@ import org.junit.Test
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
-import ru.otus.otuskotlin.marketplace.backend.repo.common.AdRepositoryMock
+import ru.otus.otuskotlin.marketplace.backend.repo.tests.AdRepositoryMock
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdResponse
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdsResponse

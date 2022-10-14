@@ -17,6 +17,7 @@ kotlin {
                 implementation(project(":ok-marketplace-common"))
 
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-core:$coroutinesVersion")
+                api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
                 api(kotlin("test-junit"))
             }
         }
