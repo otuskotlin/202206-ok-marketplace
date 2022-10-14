@@ -59,6 +59,7 @@ kotlin {
                 implementation(project(":ok-marketplace-biz"))
                 implementation(project(":ok-marketplace-mappers-v2"))
                 implementation(project(":ok-marketplace-stubs"))
+                implementation(project(":ok-marketplace-repo-inmemory"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
@@ -81,6 +82,8 @@ kotlin {
             dependencies {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
+
+                implementation(project(":ok-marketplace-repo-common"))
 
                 implementation(ktor("test-host"))
                 implementation(ktor("content-negotiation", prefix = "client-"))

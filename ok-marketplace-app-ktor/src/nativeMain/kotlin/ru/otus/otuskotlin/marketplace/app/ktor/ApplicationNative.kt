@@ -8,19 +8,19 @@ import platform.posix.exit
 
 fun main() {
     embeddedServer(CIO, environment = applicationEngineEnvironment {
-        val conf = YamlConfigLoader().load("./application.yaml")
-            ?: throw RuntimeException("Cannot read application.yaml")
-        println(conf)
-        config = conf
-        println("File read")
+//        val conf = YamlConfigLoader().load("./application.yaml")
+//            ?: throw RuntimeException("Cannot read application.yaml")
+//        println(conf)
+//        config = conf
+//        println("File read")
 
         module {
             module()
         }
 
         connector {
-            port = conf.tryGetString("ktor.deployment.port")?.toIntOrNull() ?: 8080
-            host = conf.tryGetString("ktor.deployment.host") ?: "0.0.0.0"
+            port =  8080
+            host =  "0.0.0.0"
         }
 //        println("Starting")
     }).apply {

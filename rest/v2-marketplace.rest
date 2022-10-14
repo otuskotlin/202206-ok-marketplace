@@ -28,6 +28,7 @@ Content-Type: application/json
     "id": "99999"
   },
   "debug": {
+    "mode": "stub",
     "stub": "badId"
   }
 }
