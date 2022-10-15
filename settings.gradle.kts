@@ -58,4 +58,5 @@ include("ok-marketplace-lib-cor")
 include("ok-marketplace-lib-konform")
 
 include("ok-marketplace-repo-inmemory")
+include("ok-marketplace-repo-stub")
 include("ok-marketplace-repo-tests")
