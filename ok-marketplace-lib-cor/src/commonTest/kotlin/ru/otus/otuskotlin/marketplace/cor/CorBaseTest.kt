@@ -1,16 +1,20 @@
 package ru.otus.otuskotlin.marketplace.cor
 
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.cor.handlers.CorChain
 import ru.otus.otuskotlin.marketplace.cor.handlers.CorWorker
 import ru.otus.otuskotlin.marketplace.cor.handlers.executeSequential
+import kotlin.js.JsName
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFails
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class CorBaseTest {
     @Test
-    fun `worker should execute handle`() = runBlocking {
+    @JsName("worker_should_execute_handle")
+    fun `worker should execute handle`() = runTest {
         val worker = CorWorker<TestContext>(
             title = "w1",
             blockHandle = { history += "w1; " }
@@ -21,7 +25,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `worker should not execute when off`() = runBlocking {
+    @JsName("worker_should_not_execute_when_off")
+    fun `worker should not execute when off`() = runTest {
         val worker = CorWorker<TestContext>(
             title = "w1",
             blockOn = { status == CorStatuses.ERROR },
@@ -33,7 +38,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `worker should handle exception`() = runBlocking {
+    @JsName("worker_should_handle_exception")
+    fun `worker should handle exception`() = runTest {
         val worker = CorWorker<TestContext>(
             title = "w1",
             blockHandle = { throw RuntimeException("some error") },
@@ -45,7 +51,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `chain should execute workers`() = runBlocking {
+    @JsName("chain_should_execute_workers")
+    fun `chain should execute workers`() = runTest {
         val createWorker = { title: String ->
             CorWorker<TestContext>(
                 title = title,
@@ -63,14 +70,15 @@ class CorBaseTest {
         assertEquals("w1; w2; ", ctx.history)
     }
 
-    private fun execute(dsl: ICorExecDsl<TestContext>): TestContext = runBlocking {
+    private suspend fun execute(dsl: ICorExecDsl<TestContext>): TestContext {
         val ctx = TestContext()
         dsl.build().exec(ctx)
-        ctx
+        return ctx
     }
 
     @Test
-    fun `handle should execute`() {
+    @JsName("handle_should_execute")
+    fun `handle should execute`() = runTest {
         assertEquals("w1; ", execute(rootChain {
             worker {
                 handle { history += "w1; " }
@@ -79,7 +87,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `on should check condition`() {
+    @JsName("on_should_check_condition")
+    fun `on should check condition`() = runTest {
         assertEquals("w2; w3; ", execute(rootChain {
             worker {
                 on { status == CorStatuses.ERROR }
@@ -100,7 +109,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `except should execute when exception`() {
+    @JsName("except_should_execute_when_exception")
+    fun `except should execute when exception`() = runTest {
         assertEquals("some error", execute(rootChain {
             worker {
                 handle { throw RuntimeException("some error") }
@@ -110,7 +120,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `should throw when exception and no except`() {
+    @JsName("should_throw_when_exception_and_no_except")
+    fun `should throw when exception and no except`() = runTest {
         assertFails {
             execute(rootChain {
                 worker("throw") { throw RuntimeException("some error") }
@@ -119,7 +130,8 @@ class CorBaseTest {
     }
 
     @Test
-    fun `complex chain example`() = runBlocking {
+    @JsName("complex_chain_example")
+    fun `complex chain example`() = runTest {
         val chain = rootChain<TestContext> {
             worker {
                 title = "Инициализация статуса"
@@ -176,6 +188,5 @@ enum class CorStatuses {
     NONE,
     RUNNING,
     FAILING,
-    DONE,
     ERROR
 }
