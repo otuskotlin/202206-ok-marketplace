@@ -113,7 +113,7 @@ class V1AdMockApiTest {
                     invokeReadAd = {
                         DbAdResponse(
                             isSuccess = true,
-                            data = MkplAd(id = it.id),
+                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
                         )
                     },
                     invokeUpdateAd = {
@@ -136,6 +136,7 @@ class V1AdMockApiTest {
             description = "КРУТЕЙШИЙ",
             adType = DealSide.DEMAND,
             visibility = AdVisibility.PUBLIC,
+            lock = "123",
         )
 
         val response = client.post("/v1/ad/update") {
@@ -147,6 +148,7 @@ class V1AdMockApiTest {
                     description = "КРУТЕЙШИЙ",
                     adType = DealSide.DEMAND,
                     visibility = AdVisibility.PUBLIC,
+                    lock = "123",
                 ),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,
@@ -172,7 +174,7 @@ class V1AdMockApiTest {
                     invokeReadAd = {
                         DbAdResponse(
                             isSuccess = true,
-                            data = MkplAd(id = it.id),
+                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
                         )
                     },
                     invokeDeleteAd = {
@@ -196,6 +198,7 @@ class V1AdMockApiTest {
                 requestId = "12345",
                 ad = AdDeleteObject(
                     id = deleteId,
+                    lock = "123",
                 ),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,

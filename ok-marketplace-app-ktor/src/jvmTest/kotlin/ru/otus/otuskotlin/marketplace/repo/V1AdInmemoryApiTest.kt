@@ -123,6 +123,7 @@ class V1AdInmemoryApiTest {
             description = "КРУТЕЙШИЙ",
             adType = DealSide.DEMAND,
             visibility = AdVisibility.PUBLIC,
+            lock = initAd.lock.asString()
         )
 
         val response = client.post("/v1/ad/update") {
@@ -162,6 +163,7 @@ class V1AdInmemoryApiTest {
                 requestId = "12345",
                 ad = AdDeleteObject(
                     id = uuidOld,
+                    lock = initAd.lock.asString()
                 ),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,

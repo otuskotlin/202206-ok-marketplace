@@ -7,20 +7,22 @@ import ru.otus.otuskotlin.marketplace.common.stubs.MkplStubs
 import kotlin.test.assertEquals
 import kotlin.test.Test
 
-class MapperTest {
+class MapperUpdateTest {
     @Test
     fun fromTransport() {
-        val req = AdCreateRequest(
+        val req = AdUpdateRequest(
             requestId = "1234",
             debug = AdDebug(
                 mode = AdRequestDebugMode.STUB,
                 stub = AdRequestDebugStubs.SUCCESS,
             ),
-            ad = AdCreateObject(
+            ad = AdUpdateObject(
+                id = "12345",
                 title = "title",
                 description = "desc",
                 adType = DealSide.DEMAND,
                 visibility = AdVisibility.PUBLIC,
+                lock = "456789",
             ),
         )
 
@@ -29,6 +31,8 @@ class MapperTest {
 
         assertEquals(MkplStubs.SUCCESS, context.stubCase)
         assertEquals(MkplWorkMode.STUB, context.workMode)
+        assertEquals("12345", context.adRequest.id.asString())
+        assertEquals("456789", context.adRequest.lock.asString())
         assertEquals("title", context.adRequest.title)
         assertEquals(MkplVisibility.VISIBLE_PUBLIC, context.adRequest.visibility)
         assertEquals(MkplDealSide.DEMAND, context.adRequest.adType)
@@ -38,12 +42,14 @@ class MapperTest {
     fun toTransport() {
         val context = MkplContext(
             requestId = MkplRequestId("1234"),
-            command = MkplCommand.CREATE,
+            command = MkplCommand.UPDATE,
             adResponse = MkplAd(
+                id = MkplAdId("12345"),
                 title = "title",
                 description = "desc",
                 adType = MkplDealSide.DEMAND,
                 visibility = MkplVisibility.VISIBLE_PUBLIC,
+                lock = MkplAdLock("456789"),
             ),
             errors = mutableListOf(
                 MkplError(
@@ -56,9 +62,11 @@ class MapperTest {
             state = MkplState.RUNNING,
         )
 
-        val req = context.toTransportAd() as AdCreateResponse
+        val req = context.toTransportAd() as AdUpdateResponse
 
         assertEquals("1234", req.requestId)
+        assertEquals("12345", req.ad?.id)
+        assertEquals("456789", req.ad?.lock)
         assertEquals("title", req.ad?.title)
         assertEquals("desc", req.ad?.description)
         assertEquals(AdVisibility.PUBLIC, req.ad?.visibility)

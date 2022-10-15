@@ -7,9 +7,9 @@ import ru.otus.otuskotlin.marketplace.common.models.MkplWorkMode
 import ru.otus.otuskotlin.marketplace.common.stubs.MkplStubs
 import ru.otus.otuskotlin.marketplace.mappers.v1.exceptions.UnknownRequestClass
 
-fun MkplContext.fromTransport(request: IRequest) = when(request){
+fun MkplContext.fromTransport(request: IRequest) = when (request) {
     is AdCreateRequest -> fromTransport(request)
-    is AdReadRequest   -> fromTransport(request)
+    is AdReadRequest -> fromTransport(request)
     is AdUpdateRequest -> fromTransport(request)
     is AdDeleteRequest -> fromTransport(request)
     is AdSearchRequest -> fromTransport(request)
@@ -18,17 +18,17 @@ fun MkplContext.fromTransport(request: IRequest) = when(request){
 }
 
 private fun String?.toAdId() = this?.let { MkplAdId(it) } ?: MkplAdId.NONE
-private fun String?.toAdWithId() = MkplAd(id = this.toAdId())
+private fun String?.toAdLock() = this?.let { MkplAdLock(it) } ?: MkplAdLock.NONE
 private fun IRequest?.requestId() = this?.requestId?.let { MkplRequestId(it) } ?: MkplRequestId.NONE
 
-private fun AdDebug?.transportToWorkMode(): MkplWorkMode = when(this?.mode) {
+private fun AdDebug?.transportToWorkMode(): MkplWorkMode = when (this?.mode) {
     AdRequestDebugMode.PROD -> MkplWorkMode.PROD
     AdRequestDebugMode.TEST -> MkplWorkMode.TEST
     AdRequestDebugMode.STUB -> MkplWorkMode.STUB
     null -> MkplWorkMode.PROD
 }
 
-private fun AdDebug?.transportToStubCase(): MkplStubs = when(this?.stub) {
+private fun AdDebug?.transportToStubCase(): MkplStubs = when (this?.stub) {
     AdRequestDebugStubs.SUCCESS -> MkplStubs.SUCCESS
     AdRequestDebugStubs.NOT_FOUND -> MkplStubs.NOT_FOUND
     AdRequestDebugStubs.BAD_ID -> MkplStubs.BAD_ID
@@ -51,9 +51,15 @@ fun MkplContext.fromTransport(request: AdCreateRequest) {
 fun MkplContext.fromTransport(request: AdReadRequest) {
     command = MkplCommand.READ
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
+}
+
+private fun AdReadObject?.toInternal(): MkplAd = if (this != null) {
+    MkplAd(id = id.toAdId())
+} else {
+    MkplAd.NONE
 }
 
 fun MkplContext.fromTransport(request: AdUpdateRequest) {
@@ -67,9 +73,18 @@ fun MkplContext.fromTransport(request: AdUpdateRequest) {
 fun MkplContext.fromTransport(request: AdDeleteRequest) {
     command = MkplCommand.DELETE
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
+}
+
+private fun AdDeleteObject?.toInternal(): MkplAd = if (this != null) {
+    MkplAd(
+        id = id.toAdId(),
+        lock = lock.toAdLock(),
+    )
+} else {
+    MkplAd.NONE
 }
 
 fun MkplContext.fromTransport(request: AdSearchRequest) {
@@ -83,7 +98,7 @@ fun MkplContext.fromTransport(request: AdSearchRequest) {
 fun MkplContext.fromTransport(request: AdOffersRequest) {
     command = MkplCommand.OFFERS
     requestId = request.requestId()
-    adRequest = request.ad?.id.toAdWithId()
+    adRequest = request.ad.toInternal()
     workMode = request.debug.transportToWorkMode()
     stubCase = request.debug.transportToStubCase()
 }
@@ -105,16 +120,17 @@ private fun AdUpdateObject.toInternal(): MkplAd = MkplAd(
     description = this.description ?: "",
     adType = this.adType.fromTransport(),
     visibility = this.visibility.fromTransport(),
+    lock = lock.toAdLock(),
 )
 
-private fun AdVisibility?.fromTransport(): MkplVisibility = when(this) {
+private fun AdVisibility?.fromTransport(): MkplVisibility = when (this) {
     AdVisibility.PUBLIC -> MkplVisibility.VISIBLE_PUBLIC
     AdVisibility.OWNER_ONLY -> MkplVisibility.VISIBLE_TO_OWNER
     AdVisibility.REGISTERED_ONLY -> MkplVisibility.VISIBLE_TO_GROUP
     null -> MkplVisibility.NONE
 }
 
-private fun DealSide?.fromTransport(): MkplDealSide = when(this) {
+private fun DealSide?.fromTransport(): MkplDealSide = when (this) {
     DealSide.DEMAND -> MkplDealSide.DEMAND
     DealSide.SUPPLY -> MkplDealSide.SUPPLY
     null -> MkplDealSide.NONE
