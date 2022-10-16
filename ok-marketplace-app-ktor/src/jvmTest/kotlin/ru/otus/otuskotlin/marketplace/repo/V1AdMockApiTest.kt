@@ -12,7 +12,7 @@ import org.junit.Test
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
-import ru.otus.otuskotlin.marketplace.backend.repo.common.AdRepositoryMock
+import ru.otus.otuskotlin.marketplace.backend.repo.tests.AdRepositoryMock
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdResponse
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdsResponse
@@ -113,7 +113,7 @@ class V1AdMockApiTest {
                     invokeReadAd = {
                         DbAdResponse(
                             isSuccess = true,
-                            data = MkplAd(id = it.id),
+                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
                         )
                     },
                     invokeUpdateAd = {
@@ -136,6 +136,7 @@ class V1AdMockApiTest {
             description = "КРУТЕЙШИЙ",
             adType = DealSide.DEMAND,
             visibility = AdVisibility.PUBLIC,
+            lock = "123",
         )
 
         val response = client.post("/v1/ad/update") {
@@ -147,6 +148,7 @@ class V1AdMockApiTest {
                     description = "КРУТЕЙШИЙ",
                     adType = DealSide.DEMAND,
                     visibility = AdVisibility.PUBLIC,
+                    lock = "123",
                 ),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,
@@ -172,7 +174,7 @@ class V1AdMockApiTest {
                     invokeReadAd = {
                         DbAdResponse(
                             isSuccess = true,
-                            data = MkplAd(id = it.id),
+                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
                         )
                     },
                     invokeDeleteAd = {
@@ -196,6 +198,7 @@ class V1AdMockApiTest {
                 requestId = "12345",
                 ad = AdDeleteObject(
                     id = deleteId,
+                    lock = "123",
                 ),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,

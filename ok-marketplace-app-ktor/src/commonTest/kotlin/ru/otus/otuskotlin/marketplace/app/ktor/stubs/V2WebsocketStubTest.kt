@@ -8,11 +8,13 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import ru.otus.otuskotlin.marketplace.api.v2.apiV2Mapper
 import ru.otus.otuskotlin.marketplace.api.v2.models.*
+import ru.otus.otuskotlin.marketplace.app.ktor.IgnoreNative
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertIs
 
+@IgnoreNative
 class V2WebsocketStubTest {
 
     @Test

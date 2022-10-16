@@ -1,6 +1,5 @@
 package ru.otus.otuskotlin.marketplace.app.ktor
 
-import AdRepoInMemory
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.cio.*
@@ -11,13 +10,13 @@ import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import org.slf4j.event.Level
 import ru.otus.otuskotlin.marketplace.api.v1.apiV1Mapper
-import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorUserSession
 import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorWsSessions
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.mpWsHandlerV1
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Ad
 import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.models.MkplSettings
+import ru.otus.otuskotlin.marketplace.repo.inmemory.AdRepoInMemory
 
 @Suppress("unused") // Referenced in application.conf
 fun main() {

@@ -7,7 +7,6 @@ pluginManagement {
         val openapiVersion: String by settings
         val springframeworkBootVersion: String by settings
         val springDependencyManagementVersion: String by settings
-        val pluginSpringVersion: String by settings
         val pluginJpa: String by settings
         val bmuschkoVersion: String by settings
 
@@ -18,7 +17,7 @@ pluginManagement {
 
         id("org.springframework.boot") version springframeworkBootVersion apply false
         id("io.spring.dependency-management") version springDependencyManagementVersion apply false
-        kotlin("plugin.spring") version pluginSpringVersion apply false
+        kotlin("plugin.spring") version kotlinVersion apply false
         kotlin("plugin.jpa") version pluginJpa apply false
 
         id("org.openapi.generator") version openapiVersion apply false
@@ -37,20 +36,27 @@ pluginManagement {
 //include("m2l2-testing")
 //include("m3l1-spring")
 
+include("ok-marketplace-common")
+
 include("ok-marketplace-api-v1-jackson")
 include("ok-marketplace-api-v2-kmp")
-include("ok-marketplace-common")
 include("ok-marketplace-mappers-v1")
 include("ok-marketplace-mappers-v2")
+
 include ("ok-marketplace-stubs")
+
 include ("ok-marketplace-app-spring")
 include("ok-marketplace-app-ktor")
 include("ok-marketplace-app-serverless")
+include("ok-marketplace-app-kafka")
+include("ok-marketplace-app-rabbit")
+
 include("ok-marketplace-biz")
+
 include("ok-marketplace-lib-validation")
 include("ok-marketplace-lib-cor")
 include("ok-marketplace-lib-konform")
-include("ok-marketplace-app-kafka")
-include("ok-marketplace-app-rabbit")
-include("ok-marketplace-repo-common")
+
 include("ok-marketplace-repo-inmemory")
+include("ok-marketplace-repo-stubs")
+include("ok-marketplace-repo-tests")

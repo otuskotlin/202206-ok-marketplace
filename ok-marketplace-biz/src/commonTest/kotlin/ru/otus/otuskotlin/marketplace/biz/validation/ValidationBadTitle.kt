@@ -21,6 +21,7 @@ fun validationTitleCorrect(command: MkplCommand, processor: MkplAdProcessor) = r
             description = "abc",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
+            lock = MkplAdLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -41,6 +42,7 @@ fun validationTitleTrim(command: MkplCommand, processor: MkplAdProcessor) = runT
             description = "abc",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
+            lock = MkplAdLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -61,6 +63,7 @@ fun validationTitleEmpty(command: MkplCommand, processor: MkplAdProcessor) = run
             description = "abc",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
+            lock = MkplAdLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)
@@ -83,6 +86,7 @@ fun validationTitleSymbols(command: MkplCommand, processor: MkplAdProcessor) = r
             description = "abc",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
+            lock = MkplAdLock("123-234-abc-ABC"),
         ),
     )
     processor.exec(ctx)

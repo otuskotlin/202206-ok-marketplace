@@ -83,7 +83,7 @@ kotlin {
                 implementation(kotlin("test-common"))
                 implementation(kotlin("test-annotations-common"))
 
-                implementation(project(":ok-marketplace-repo-common"))
+                implementation(project(":ok-marketplace-repo-tests"))
 
                 implementation(ktor("test-host"))
                 implementation(ktor("content-negotiation", prefix = "client-"))
