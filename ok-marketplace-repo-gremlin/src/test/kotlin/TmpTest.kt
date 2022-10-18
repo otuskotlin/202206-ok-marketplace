@@ -2,6 +2,8 @@
 
 package ru.otus.otuskotlin.marketplace.backend.repository.gremlin
 
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.apache.tinkerpop.gremlin.arcadedb.structure.io.ArcadeIoRegistry
 import org.apache.tinkerpop.gremlin.driver.Cluster
 import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection
@@ -11,10 +13,16 @@ import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.io.binary.TypeSerializerRegistry
 import org.junit.Ignore
 import org.junit.Test
+import ru.otus.otuskotlin.marketplace.common.models.MkplAd
+import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
+import ru.otus.otuskotlin.marketplace.common.repo.DbAdIdRequest
+import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
+import kotlin.test.fail
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__` as bs
 
 
 @Ignore("Тест для экспериментов")
+@OptIn(ExperimentalCoroutinesApi::class)
 class TmpTest {
 
     @Test
@@ -30,11 +38,13 @@ class TmpTest {
         val cluster = Cluster.build()
             .addContactPoints("localhost")
             .port(8182)
-            .credentials("root", "root_root1")
+            .credentials("root", "root_root")
             .serializer(serializer)
-//            enableSsl(enableSsl)
             .create()
-        val g = traversal().withRemote(DriverRemoteConnection.using(cluster,"mkpl"))
+        // Должно работать таким образом, но на текущий момент не работает из-за бага в ArcadeDb
+        // Тест в ArcadeDb задизейблен:
+        // https://github.com/ArcadeData/arcadedb/blob/main/gremlin/src/test/java/com/arcadedb/server/gremlin/ConnectRemoteGremlinServer.java
+        val g = traversal().withRemote(DriverRemoteConnection.using(cluster, "mkpl"))
         val userId = g
             .addV("User")
             .property("name", "Evan")
@@ -59,10 +69,10 @@ class TmpTest {
         val g = traversal()
             .withRemote(DriverRemoteConnection.using(cluster))
         val x = g.V().hasLabel("Test").`as`("a")
-            .project<Any>("lock", "ownerId", "z")
+            .project<Any?>("lock", "ownerId", "z")
             .by("lock")
             .by(bs.inE("Owns").outV().id())
-            .by(bs.elementMap<Vertex, Any>())
+            .by(bs.elementMap<Vertex, Map<Any?,Any?>>())
             .toList()
 
         println("CONTENT: ${x}")
@@ -134,5 +144,26 @@ class TmpTest {
 //            .toList()
 //        println("CONTENT: ${x}")
         g.close()
+    }
+
+    @Test
+    fun repoTest() = runTest {
+        val initObj = MkplAd(
+            title = "x",
+            description = "y",
+            ownerId = MkplUserId("123"),
+//            adType = MkplDealSide.SUPPLY,
+//            visibility = MkplVisibility.VISIBLE_PUBLIC,
+        )
+        val repo = AdRepoGremlin(hosts = "localhost")
+        val resAd = repo.createAd(DbAdRequest(ad = initObj))
+        val ad = resAd.data ?: fail("Empty object")
+        val adRead = repo.readAd(DbAdIdRequest(ad.id))
+        println("adRead: $adRead")
+
+        val adDel = repo.deleteAd(DbAdIdRequest(ad.id, ad.lock))
+        println("adDel: $adDel")
+        val adDeleted = repo.readAd(DbAdIdRequest(ad.id))
+        println("adRead: $adDeleted")
     }
 }

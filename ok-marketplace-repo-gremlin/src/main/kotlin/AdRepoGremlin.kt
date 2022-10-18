@@ -15,11 +15,11 @@ import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.FIELD_TITLE
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.FIELD_TMP_RESULT
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.RESULT_LOCK_FAILURE
-import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.RESULT_SUCCESS
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.exceptions.DbDuplicatedElementsException
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.exceptions.WrongIdTypeException
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.addMkplAd
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.label
+import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.listMkplAd
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.toMkplAd
 import ru.otus.otuskotlin.marketplace.common.helpers.asMkplError
 import ru.otus.otuskotlin.marketplace.common.helpers.errorAdministration
@@ -57,8 +57,8 @@ class AdRepoGremlin(
 
     private fun save(ad: MkplAd): MkplAd = g.addV(ad.label())
         .addMkplAd(ad)
-        ?.elementMap<Any>()
-        ?.toList()
+        .listMkplAd()
+        .toList()
         ?.first()
         ?.toMkplAd()
         ?: throw RuntimeException("Cannot initialize object $ad")
@@ -67,7 +67,7 @@ class AdRepoGremlin(
         val key = randomUuid()
         val ad = rq.ad.copy(id = MkplAdId(key), lock = MkplAdLock(randomUuid()))
         val id = g.addV(ad.label()).addMkplAd(ad)
-            ?.next()
+            .next()
             ?.id()
             .let {
                 when (it) {
@@ -97,7 +97,7 @@ class AdRepoGremlin(
     override suspend fun readAd(rq: DbAdIdRequest): DbAdResponse {
         val key = rq.id.takeIf { it != MkplAdId.NONE }?.asString() ?: return resultErrorEmptyId
         val dbRes = try {
-            g.V(key).elementMap<Any>().toList()
+            g.V(key).listMkplAd().toList()
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
                 return resultErrorNotFound
@@ -142,9 +142,10 @@ class AdRepoGremlin(
                     select<Vertex, Any>("a")
                         .values<String>(FIELD_LOCK)
                         .`is`(oldLock.asString()),
-                    select<Vertex, Vertex>("a").addMkplAd(newAd),
-                    select<Vertex, Vertex>("a")
-                ).elementMap<Any>().toList()
+                    select<Vertex, Vertex>("a").addMkplAd(newAd).listMkplAd(),
+                    select<Vertex, Vertex>("a").listMkplAd(result = RESULT_LOCK_FAILURE)
+                )
+                .toList()
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
                 return resultErrorNotFound
@@ -194,15 +195,19 @@ class AdRepoGremlin(
                 .V(key)
                 .`as`("a")
                 .choose(
-                    select<Vertex, Any>("a")
+                    select<Vertex, Vertex>("a")
                         .values<String>(FIELD_LOCK)
                         .`is`(oldLock.asString()),
                     select<Vertex, Vertex>("a")
                         .sideEffect(drop<Vertex>())
-                        .property(FIELD_TMP_RESULT, RESULT_SUCCESS),
-                    select<Vertex, Vertex>("a")
-                        .property(FIELD_TMP_RESULT, RESULT_LOCK_FAILURE),
-                ).elementMap<Any>().toList()
+                        .listMkplAd(),
+//                        .property(FIELD_TMP_RESULT, RESULT_SUCCESS),
+                    select<Vertex,Vertex>("a")
+                        .listMkplAd(result = RESULT_LOCK_FAILURE)
+//                        .property(FIELD_TMP_RESULT, RESULT_LOCK_FAILURE),
+                )
+//                .listMkplAd()
+                .toList()
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
                 return resultErrorNotFound
@@ -267,7 +272,7 @@ class AdRepoGremlin(
                 .apply { rq.ownerId.takeIf { it != MkplUserId.NONE }?.also { has(FIELD_OWNER_ID, it.asString()) } }
                 .apply { rq.dealSide.takeIf { it != MkplDealSide.NONE }?.also { has(FIELD_AD_TYPE, it.name) } }
                 .apply { rq.titleFilter.takeIf { it.isNotBlank() }?.also { has(FIELD_TITLE, TextP.containing(it)) } }
-                .elementMap<Any>()
+                .listMkplAd()
                 .toList()
         } catch (e: Throwable) {
             return DbAdsResponse(
