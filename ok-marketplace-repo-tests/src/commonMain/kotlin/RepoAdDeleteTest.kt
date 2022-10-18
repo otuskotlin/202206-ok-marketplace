@@ -1,7 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.MkplAd
 import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdIdRequest
@@ -15,7 +14,7 @@ abstract class RepoAdDeleteTest {
     abstract val repo: IAdRepository
 
     @Test
-    fun deleteSuccess() = runTest {
+    fun deleteSuccess() = runRepoTest {
         val result = repo.deleteAd(DbAdIdRequest(successId, lock = lockOld))
 
         assertEquals(true, result.isSuccess)
@@ -24,7 +23,7 @@ abstract class RepoAdDeleteTest {
     }
 
     @Test
-    fun deleteNotFound() = runTest {
+    fun deleteNotFound() = runRepoTest {
         val result = repo.readAd(DbAdIdRequest(notFoundId, lock = lockOld))
 
         assertEquals(false, result.isSuccess)
@@ -34,7 +33,7 @@ abstract class RepoAdDeleteTest {
     }
 
     @Test
-    fun deleteConcurrency() = runTest {
+    fun deleteConcurrency() = runRepoTest {
         val result = repo.deleteAd(DbAdIdRequest(concurrencyId, lock = lockBad))
 
         assertEquals(false, result.isSuccess)

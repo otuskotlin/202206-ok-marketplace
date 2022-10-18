@@ -1,7 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
@@ -25,7 +24,7 @@ abstract class RepoAdCreateTest {
     )
 
     @Test
-    fun createSuccess() = runTest {
+    fun createSuccess() = runRepoTest {
         val result = repo.createAd(DbAdRequest(createObj))
         val expected = createObj.copy(id = result.data?.id ?: MkplAdId.NONE)
         assertEquals(true, result.isSuccess)

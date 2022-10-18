@@ -12,5 +12,9 @@ data class DbAdsResponse(
     companion object {
         val MOCK_SUCCESS_EMPTY = DbAdsResponse(emptyList(), true)
         val MOCK_SUCCESS_NONE get() =  DbAdsResponse(listOf(MkplAd.NONE), true)
+
+        fun success(result: List<MkplAd>) = DbAdsResponse(result, true)
+        fun error(errors: List<MkplError>) = DbAdsResponse(null, false, errors)
+        fun error(error: MkplError) = DbAdsResponse(null, false, listOf(error))
     }
 }
