@@ -1,7 +1,5 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.sql
 
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
@@ -38,7 +36,6 @@ class RepoAdSQL(
     initObjects: Collection<MkplAd> = emptyList(),
 ) : IAdRepository {
     private val db by lazy { SqlConnector(url, user, password, schema).connect(AdsTable, UsersTable) }
-    private val mutex = Mutex()
 
     init {
         initObjects.forEach {
@@ -78,9 +75,7 @@ class RepoAdSQL(
 
     override suspend fun createAd(rq: DbAdRequest): DbAdResponse {
         val ad = rq.ad.copy(lock = MkplAdLock(UUID.randomUUID().toString()))
-        return mutex.withLock {
-            save(ad)
-        }
+        return save(ad)
     }
 
     override suspend fun readAd(rq: DbAdIdRequest): DbAdResponse {
@@ -103,24 +98,23 @@ class RepoAdSQL(
         val oldLock = rq.ad.lock.takeIf { it != MkplAdLock.NONE }?.asString()
         val newAd = rq.ad.copy(lock = MkplAdLock(UUID.randomUUID().toString()))
 
-        return mutex.withLock {
-            safeTransaction({
-                val local = AdsTable.select { AdsTable.id.eq(key) }.singleOrNull()?.let {
-                    AdsTable.from(it)
-                } ?: return@safeTransaction resultErrorNotFound
+        return safeTransaction({
+            val local = AdsTable.select { AdsTable.id.eq(key) }.singleOrNull()?.let {
+                AdsTable.from(it)
+            } ?: return@safeTransaction resultErrorNotFound
 
-                return@safeTransaction when (oldLock) {
-                    null, local.lock.asString() -> updateDb(newAd)
-                    else -> resultErrorConcurrent(local.lock.asString(), local)
-                }
-            }, {
-                DbAdResponse(
-                    data = rq.ad,
-                    isSuccess = false,
-                    errors = listOf(MkplError(field = "id", message = "Not Found", code = notFoundCode))
-                )
-            })
-        }
+            return@safeTransaction when (oldLock) {
+                null, local.lock.asString() -> updateDb(newAd)
+                else -> resultErrorConcurrent(local.lock.asString(), local)
+            }
+        }, {
+            DbAdResponse(
+                data = rq.ad,
+                isSuccess = false,
+                errors = listOf(MkplError(field = "id", message = "Not Found", code = notFoundCode))
+            )
+        })
+
     }
 
     private fun updateDb(newAd: MkplAd): DbAdResponse {
@@ -145,23 +139,21 @@ class RepoAdSQL(
     override suspend fun deleteAd(rq: DbAdIdRequest): DbAdResponse {
         val key = rq.id.takeIf { it != MkplAdId.NONE }?.asString() ?: return resultErrorEmptyId
 
-        return mutex.withLock {
-            safeTransaction({
-                val local = AdsTable.select { AdsTable.id.eq(key) }.single().let { AdsTable.from(it) }
-                if (local.lock == rq.lock) {
-                    AdsTable.deleteWhere { AdsTable.id eq rq.id.asString() }
-                    DbAdResponse(data = local, isSuccess = true)
-                } else {
-                    resultErrorConcurrent(rq.lock.asString(), local)
-                }
-            }, {
-                DbAdResponse(
-                    data = null,
-                    isSuccess = false,
-                    errors = listOf(MkplError(field = "id", message = "Not Found"))
-                )
-            })
-        }
+        return safeTransaction({
+            val local = AdsTable.select { AdsTable.id.eq(key) }.single().let { AdsTable.from(it) }
+            if (local.lock == rq.lock) {
+                AdsTable.deleteWhere { AdsTable.id eq rq.id.asString() }
+                DbAdResponse(data = local, isSuccess = true)
+            } else {
+                resultErrorConcurrent(rq.lock.asString(), local)
+            }
+        }, {
+            DbAdResponse(
+                data = null,
+                isSuccess = false,
+                errors = listOf(MkplError(field = "id", message = "Not Found"))
+            )
+        })
     }
 
     override suspend fun searchAd(rq: DbAdFilterRequest): DbAdsResponse {
