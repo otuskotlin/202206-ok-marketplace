@@ -5,10 +5,7 @@ import com.datastax.oss.driver.api.mapper.annotations.CqlName
 import com.datastax.oss.driver.api.mapper.annotations.Entity
 import com.datastax.oss.driver.api.mapper.annotations.PartitionKey
 import com.datastax.oss.driver.api.querybuilder.SchemaBuilder
-import ru.otus.otuskotlin.marketplace.common.models.MkplAd
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdLock
-import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
+import ru.otus.otuskotlin.marketplace.common.models.*
 
 @Entity
 data class AdCassandraDTO(
@@ -23,6 +20,7 @@ data class AdCassandraDTO(
     var ownerId: String? = null,
     @field:CqlName(COLUMN_VISIBILITY)
     var visibility: AdVisibility? = null,
+    var productId: String? = null,
     // Нельзя использовать в моделях хранения внутренние модели.
     // При изменении внутренних моделей, БД автоматически не изменится,
     // а потому будет Runtime ошибка, которая вылезет только на продуктовом стенде
@@ -37,6 +35,7 @@ data class AdCassandraDTO(
         title = adModel.title.takeIf { it.isNotBlank() },
         description = adModel.description.takeIf { it.isNotBlank() },
         visibility = adModel.visibility.toTransport(),
+        productId = adModel.productId.takeIf { it != MkplProductId.NONE }?.asString(),
         adType = adModel.adType.toTransport(),
         lock = adModel.lock.takeIf { it != MkplAdLock.NONE }?.asString()
     )
@@ -48,6 +47,7 @@ data class AdCassandraDTO(
             title = title ?: "",
             description = description ?: "",
             visibility = visibility.fromTransport(),
+            productId = productId?.let { MkplProductId(it) } ?: MkplProductId.NONE,
             adType = adType.fromTransport(),
             lock = lock?.let { MkplAdLock(it) } ?: MkplAdLock.NONE
         )

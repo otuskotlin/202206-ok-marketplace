@@ -24,9 +24,9 @@ class RepoAdCassandra(
     private fun errorToAdResponse(e: Exception) = DbAdResponse.error(e.asMkplError())
     private fun errorToAdsResponse(e: Exception) = DbAdsResponse.error(e.asMkplError())
 
-    private suspend fun <DbRes, Response> doDbAction(
+    private suspend inline fun <DbRes, Response> doDbAction(
         name: String,
-        daoAction: () -> CompletionStage<DbRes>,
+        crossinline daoAction: () -> CompletionStage<DbRes>,
         okToResponse: (DbRes) -> Response,
         errorToResponse: (Exception) -> Response
     ): Response = doDbAction(
@@ -46,7 +46,7 @@ class RepoAdCassandra(
         errorToResponse
     )
 
-    private suspend fun readAndDoDbAction(
+    private suspend inline fun readAndDoDbAction(
         name: String,
         id: MkplAdId,
         successResult: MkplAd?,
@@ -73,9 +73,9 @@ class RepoAdCassandra(
             errorToResponse
         )
 
-    private suspend fun <Response> doDbAction(
+    private inline fun <Response> doDbAction(
         name: String,
-        daoAction: suspend () -> Response,
+        daoAction: () -> Response,
         errorToResponse: (Exception) -> Response
     ): Response =
         try {
@@ -120,23 +120,6 @@ class RepoAdCassandra(
             { dao.update(dto, prevLock) },
             ::errorToAdResponse
             )
-/*
-        if (rq.ad.id == MkplAdId.NONE)
-            ID_IS_EMPTY
-        else {
-            val prevLock = rq.ad.lock.asString()
-            val new = rq.ad.copy(lock = MkplAdLock(randomUuid()))
-            val dto = AdCassandraDTO(new)
-            doDbAction(
-                "update",
-                { dao.update(dto, prevLock) },
-                { updated ->
-                    if (updated) DbAdResponse.success(new)
-                    else ID_NOT_FOUND
-                },
-                ::errorToAdResponse
-            )
-        }*/
     }
 
     override suspend fun deleteAd(rq: DbAdIdRequest): DbAdResponse =
