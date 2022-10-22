@@ -20,6 +20,7 @@ data class AdCassandraDTO(
     var ownerId: String? = null,
     @field:CqlName(COLUMN_VISIBILITY)
     var visibility: AdVisibility? = null,
+    @field:CqlName(COLUMN_PRODUCT)
     var productId: String? = null,
     // Нельзя использовать в моделях хранения внутренние модели.
     // При изменении внутренних моделей, БД автоматически не изменится,
@@ -60,6 +61,7 @@ data class AdCassandraDTO(
         const val COLUMN_DESCRIPTION = "description"
         const val COLUMN_OWNER_ID = "owner_id_my"
         const val COLUMN_VISIBILITY = "visibility"
+        const val COLUMN_PRODUCT = "product"
         const val COLUMN_AD_TYPE = "deal_side"
         const val COLUMN_LOCK = "lock"
 
@@ -72,6 +74,7 @@ data class AdCassandraDTO(
                 .withColumn(COLUMN_DESCRIPTION, DataTypes.TEXT)
                 .withColumn(COLUMN_OWNER_ID, DataTypes.TEXT)
                 .withColumn(COLUMN_VISIBILITY, DataTypes.TEXT)
+                .withColumn(COLUMN_PRODUCT, DataTypes.TEXT)
                 .withColumn(COLUMN_AD_TYPE, DataTypes.TEXT)
                 .withColumn(COLUMN_LOCK, DataTypes.TEXT)
                 .build()

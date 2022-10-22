@@ -1,7 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.cassandra
 
 import com.benasher44.uuid.uuid4
-import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.future.await
 import kotlinx.coroutines.withTimeout
 import org.slf4j.LoggerFactory
@@ -32,16 +31,8 @@ class RepoAdCassandra(
     ): Response = doDbAction(
         name,
         {
-            log.warn("DB OPERATION START")
-            try {
-                val dbRes = withTimeout(timeoutMillis) { daoAction().await() }
-                okToResponse(dbRes)
-            } catch (e : TimeoutCancellationException) {
-                log.warn("TIMEOUT")
-                throw e
-            }
-
-           // okToResponse(dbRes)
+            val dbRes = withTimeout(timeoutMillis) { daoAction().await() }
+            okToResponse(dbRes)
         },
         errorToResponse
     )
