@@ -248,18 +248,6 @@ class AdRepoGremlin(
                 isSuccess = true,
             )
         }
-
-//        return when (result) {
-//            RESULT_SUCCESS -> readResult
-//            RESULT_LOCK_FAILURE -> DbAdResponse(
-//                data = null,
-//                isSuccess = false,
-//                errors = listOf(errorRepoConcurrency())
-//            )
-//
-//            null -> resultErrorNotFound
-//            else -> throw WrongResponseFromDb("Unsupported response '$result' from DB Gremliln for ${this::deleteAd::class}")
-//        }
     }
 
     /**
