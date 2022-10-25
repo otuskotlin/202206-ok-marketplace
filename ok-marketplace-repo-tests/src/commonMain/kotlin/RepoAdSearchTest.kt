@@ -1,7 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.MkplAd
 import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
 import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
@@ -18,7 +17,7 @@ abstract class RepoAdSearchTest {
     protected open val initializedObjects: List<MkplAd> = initObjects
 
     @Test
-    fun searchOwner() = runTest {
+    fun searchOwner() = runRepoTest {
         val result = repo.searchAd(DbAdFilterRequest(ownerId = searchOwnerId))
         assertEquals(true, result.isSuccess)
         val expected = listOf(initializedObjects[1], initializedObjects[3]).sortedBy { it.id.asString() }
@@ -27,7 +26,7 @@ abstract class RepoAdSearchTest {
     }
 
     @Test
-    fun searchDealSide() = runTest {
+    fun searchDealSide() = runRepoTest {
         val result = repo.searchAd(DbAdFilterRequest(dealSide = MkplDealSide.SUPPLY))
         assertEquals(true, result.isSuccess)
         val expected = listOf(initializedObjects[2], initializedObjects[4]).sortedBy { it.id.asString() }

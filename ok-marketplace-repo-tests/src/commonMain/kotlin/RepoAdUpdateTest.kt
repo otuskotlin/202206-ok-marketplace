@@ -1,7 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
@@ -51,7 +50,7 @@ abstract class RepoAdUpdateTest {
     }
 
     @Test
-    fun updateSuccess() = runTest {
+    fun updateSuccess() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateSucc))
         assertEquals(true, result.isSuccess)
         assertEquals(reqUpdateSucc.id, result.data?.id)
@@ -63,7 +62,7 @@ abstract class RepoAdUpdateTest {
     }
 
     @Test
-    fun updateNotFound() = runTest {
+    fun updateNotFound() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateNotFound))
         assertEquals(false, result.isSuccess)
         assertEquals(null, result.data)
@@ -72,7 +71,7 @@ abstract class RepoAdUpdateTest {
     }
 
     @Test
-    fun updateConcurrencyError() = runTest {
+    fun updateConcurrencyError() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateConc))
         assertEquals(false, result.isSuccess)
         val error = result.errors.find { it.code == "concurrency" }
