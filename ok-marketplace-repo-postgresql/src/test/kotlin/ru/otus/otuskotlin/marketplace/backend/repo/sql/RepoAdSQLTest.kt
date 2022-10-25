@@ -8,7 +8,10 @@ import ru.otus.otuskotlin.marketplace.backend.repo.tests.RepoAdUpdateTest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
 
 class RepoAdSQLCreateTest : RepoAdCreateTest() {
-    override val repo: IAdRepository = SqlTestCompanion.repoUnderTestContainer(initObjects)
+    override val repo: IAdRepository = SqlTestCompanion.repoUnderTestContainer(
+        initObjects,
+        randomUuid = { lockNew.asString() },
+    )
 }
 
 class RepoAdSQLDeleteTest : RepoAdDeleteTest() {
@@ -24,5 +27,8 @@ class RepoAdSQLSearchTest : RepoAdSearchTest() {
 }
 
 class RepoAdSQLUpdateTest : RepoAdUpdateTest() {
-    override val repo: IAdRepository = SqlTestCompanion.repoUnderTestContainer(initObjects)
+    override val repo: IAdRepository = SqlTestCompanion.repoUnderTestContainer(
+        initObjects,
+        randomUuid = { lockNew.asString() },
+    )
 }

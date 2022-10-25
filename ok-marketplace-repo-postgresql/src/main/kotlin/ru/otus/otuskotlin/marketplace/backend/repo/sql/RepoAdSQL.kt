@@ -1,5 +1,6 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.sql
 
+import com.benasher44.uuid.uuid4
 import org.jetbrains.exposed.sql.Op
 import org.jetbrains.exposed.sql.Transaction
 import org.jetbrains.exposed.sql.and
@@ -34,6 +35,7 @@ class RepoAdSQL(
     password: String = "marketplace-pass",
     schema: String = "marketplace",
     initObjects: Collection<MkplAd> = emptyList(),
+    val randomUuid: () -> String = { uuid4().toString() },
 ) : IAdRepository {
     private val db by lazy { SqlConnector(url, user, password, schema).connect(AdsTable, UsersTable) }
 
@@ -74,7 +76,7 @@ class RepoAdSQL(
     }
 
     override suspend fun createAd(rq: DbAdRequest): DbAdResponse {
-        val ad = rq.ad.copy(lock = MkplAdLock(UUID.randomUUID().toString()))
+        val ad = rq.ad.copy(lock = MkplAdLock(randomUuid()))
         return save(ad)
     }
 
@@ -96,7 +98,7 @@ class RepoAdSQL(
     override suspend fun updateAd(rq: DbAdRequest): DbAdResponse {
         val key = rq.ad.id.takeIf { it != MkplAdId.NONE }?.asString() ?: return resultErrorEmptyId
         val oldLock = rq.ad.lock.takeIf { it != MkplAdLock.NONE }?.asString()
-        val newAd = rq.ad.copy(lock = MkplAdLock(UUID.randomUUID().toString()))
+        val newAd = rq.ad.copy(lock = MkplAdLock(randomUuid()))
 
         return safeTransaction({
             val local = AdsTable.select { AdsTable.id.eq(key) }.singleOrNull()?.let {
@@ -130,6 +132,7 @@ class RepoAdSQL(
             it[ownerId] = newAd.ownerId.asString()
             it[visibility] = newAd.visibility
             it[adType] = newAd.adType
+            it[lock] = newAd.lock.asString()
         }
         val result = AdsTable.select { AdsTable.id.eq(newAd.id.asString()) }.single()
 
