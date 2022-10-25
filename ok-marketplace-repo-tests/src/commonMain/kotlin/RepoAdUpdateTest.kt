@@ -1,13 +1,7 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import ru.otus.otuskotlin.marketplace.common.models.MkplAd
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdLock
-import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
-import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
-import ru.otus.otuskotlin.marketplace.common.models.MkplVisibility
+import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
 import kotlin.test.Test
@@ -21,7 +15,7 @@ abstract class RepoAdUpdateTest {
     protected val updateConc = initObjects[1]
     protected val updateIdNotFound = MkplAdId("ad-repo-update-not-found")
     protected val lockBad = MkplAdLock("20000000-0000-0000-0000-000000000009")
-    protected val lockNew = MkplAdLock("20000000-0000-0000-0000-000000000001")
+    protected val lockNew = MkplAdLock("20000000-0000-0000-0000-000000000002")
 
     private val reqUpdateSucc = MkplAd(
         id = updateSucc.id,
@@ -52,7 +46,7 @@ abstract class RepoAdUpdateTest {
     )
 
     @Test
-    fun updateSuccess() = runTest {
+    fun updateSuccess() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateSucc))
         assertEquals(true, result.isSuccess)
         assertEquals(reqUpdateSucc.id, result.data?.id)
@@ -64,7 +58,7 @@ abstract class RepoAdUpdateTest {
     }
 
     @Test
-    fun updateNotFound() = runTest {
+    fun updateNotFound() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateNotFound))
         assertEquals(false, result.isSuccess)
         assertEquals(null, result.data)
@@ -73,7 +67,7 @@ abstract class RepoAdUpdateTest {
     }
 
     @Test
-    fun updateConcurrencyError() = runTest {
+    fun updateConcurrencyError() = runRepoTest {
         val result = repo.updateAd(DbAdRequest(reqUpdateConc))
         assertEquals(false, result.isSuccess)
         val error = result.errors.find { it.code == "concurrency" }

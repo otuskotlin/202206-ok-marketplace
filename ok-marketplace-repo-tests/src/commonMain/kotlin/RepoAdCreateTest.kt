@@ -1,19 +1,12 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
-import ru.otus.otuskotlin.marketplace.common.models.MkplAd
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplAdLock
-import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
-import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
-import ru.otus.otuskotlin.marketplace.common.models.MkplVisibility
+import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
 import kotlin.test.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -31,7 +24,7 @@ abstract class RepoAdCreateTest {
     )
 
     @Test
-    fun createSuccess() = runTest {
+    fun createSuccess() = runRepoTest {
         val result = repo.createAd(DbAdRequest(createObj))
         val expected = createObj.copy(id = result.data?.id ?: MkplAdId.NONE)
         assertEquals(true, result.isSuccess)
@@ -40,7 +33,7 @@ abstract class RepoAdCreateTest {
         assertEquals(expected.adType, result.data?.adType)
         assertNotEquals(MkplAdId.NONE, result.data?.id)
         assertEquals(emptyList(), result.errors)
-        assertNotNull(result.data?.lock)
+        assertEquals(lockNew, result.data?.lock)
     }
 
     companion object : BaseInitAds("create") {

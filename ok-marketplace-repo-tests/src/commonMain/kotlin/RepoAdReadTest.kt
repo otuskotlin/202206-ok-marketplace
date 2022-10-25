@@ -1,10 +1,8 @@
 package ru.otus.otuskotlin.marketplace.backend.repo.tests
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.common.models.MkplAd
 import ru.otus.otuskotlin.marketplace.common.models.MkplAdId
-import ru.otus.otuskotlin.marketplace.common.models.MkplError
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdIdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.IAdRepository
 import kotlin.test.Test
@@ -16,7 +14,7 @@ abstract class RepoAdReadTest {
     abstract val repo: IAdRepository
 
     @Test
-    fun readSuccess() = runTest {
+    fun readSuccess() = runRepoTest {
         val result = repo.readAd(DbAdIdRequest(successId))
 
         assertEquals(true, result.isSuccess)
@@ -25,7 +23,7 @@ abstract class RepoAdReadTest {
     }
 
     @Test
-    fun readNotFound() = runTest {
+    fun readNotFound() = runRepoTest {
         val result = repo.readAd(DbAdIdRequest(notFoundId))
 
         assertEquals(false, result.isSuccess)
