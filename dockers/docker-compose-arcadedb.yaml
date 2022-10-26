@@ -1,0 +1,27 @@
+version: "3.3"
+services:
+  arcadedb:
+    image: "arcadedata/arcadedb:latest"
+    ports:
+      - "2480:2480"
+      - "2424:2424"
+      - "8182:8182"
+    volumes:
+      - ./arcadedb:/home/arcadedb/databases
+    environment:
+      "arcadedb.server.rootPassword": "root_root"
+      "arcadedb.server.plugins": "GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin"
+      "arcadedb.server.defaultDatabases": "mkpl[root];test[root]"
+
+#  app:
+#    image: ok-marketplace-be-app-kafka:0.0.1
+#    depends_on:
+#      - kafka
+#    links:
+#      - zookeeper
+#      - kafka
+#    environment:
+#      KAFKA_HOSTS: kafka:9092
+#      KAFKA_TOPIC_IN: marketplace-in
+#      KAFKA_TOPIC_OUT: marketplace-out
+

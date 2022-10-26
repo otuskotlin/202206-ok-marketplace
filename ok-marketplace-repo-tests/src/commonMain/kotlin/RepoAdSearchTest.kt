@@ -13,11 +13,14 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class RepoAdSearchTest {
     abstract val repo: IAdRepository
+
+    protected open val initializedObjects: List<MkplAd> = initObjects
+
     @Test
     fun searchOwner() = runRepoTest {
         val result = repo.searchAd(DbAdFilterRequest(ownerId = searchOwnerId))
         assertEquals(true, result.isSuccess)
-        val expected = listOf(initObjects[1], initObjects[3])
+        val expected = listOf(initializedObjects[1], initializedObjects[3]).sortedBy { it.id.asString() }
         assertEquals(expected, result.data?.sortedBy { it.id.asString() })
         assertEquals(emptyList(), result.errors)
     }
@@ -26,7 +29,7 @@ abstract class RepoAdSearchTest {
     fun searchDealSide() = runRepoTest {
         val result = repo.searchAd(DbAdFilterRequest(dealSide = MkplDealSide.SUPPLY))
         assertEquals(true, result.isSuccess)
-        val expected = listOf(initObjects[2], initObjects[4])
+        val expected = listOf(initializedObjects[2], initializedObjects[4]).sortedBy { it.id.asString() }
         assertEquals(expected, result.data?.sortedBy { it.id.asString() })
         assertEquals(emptyList(), result.errors)
     }

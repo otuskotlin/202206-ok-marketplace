@@ -12,13 +12,14 @@ import kotlin.test.assertEquals
 @OptIn(ExperimentalCoroutinesApi::class)
 abstract class RepoAdReadTest {
     abstract val repo: IAdRepository
+    protected open val readSucc = initObjects[0]
 
     @Test
     fun readSuccess() = runRepoTest {
-        val result = repo.readAd(DbAdIdRequest(successId))
+        val result = repo.readAd(DbAdIdRequest(readSucc.id))
 
         assertEquals(true, result.isSuccess)
-        assertEquals(readSuccessStub, result.data)
+        assertEquals(readSucc, result.data)
         assertEquals(emptyList(), result.errors)
     }
 
@@ -36,9 +37,7 @@ abstract class RepoAdReadTest {
         override val initObjects: List<MkplAd> = listOf(
             createInitTestModel("read")
         )
-        private val readSuccessStub = initObjects.first()
 
-        val successId = MkplAdId(readSuccessStub.id.asString())
         val notFoundId = MkplAdId("ad-repo-read-notFound")
 
     }
