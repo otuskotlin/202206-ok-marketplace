@@ -7,7 +7,7 @@ import org.apache.tinkerpop.gremlin.driver.remote.DriverRemoteConnection
 import org.apache.tinkerpop.gremlin.process.traversal.AnonymousTraversalSource.traversal
 import org.apache.tinkerpop.gremlin.process.traversal.TextP
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__`.*
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__` as gr
 import org.apache.tinkerpop.gremlin.structure.Vertex
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.FIELD_AD_TYPE
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.FIELD_LOCK
@@ -16,7 +16,6 @@ import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.FIELD_TMP_RESULT
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.AdGremlinConst.RESULT_LOCK_FAILURE
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.exceptions.DbDuplicatedElementsException
-import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.exceptions.WrongIdTypeException
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.addMkplAd
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.label
 import ru.otus.otuskotlin.marketplace.backend.repository.gremlin.mappers.listMkplAd
@@ -58,40 +57,36 @@ class AdRepoGremlin(
     private fun save(ad: MkplAd): MkplAd = g.addV(ad.label())
         .addMkplAd(ad)
         .listMkplAd()
-        .toList()
-        ?.first()
+        .next()
         ?.toMkplAd()
         ?: throw RuntimeException("Cannot initialize object $ad")
 
     override suspend fun createAd(rq: DbAdRequest): DbAdResponse {
         val key = randomUuid()
         val ad = rq.ad.copy(id = MkplAdId(key), lock = MkplAdLock(randomUuid()))
-        val id = g.addV(ad.label()).addMkplAd(ad)
-            .next()
-            ?.id()
-            .let {
-                when (it) {
-                    is String -> it
-                    else -> return DbAdResponse(
-                        data = null, isSuccess = false,
-                        errors = listOf(
-                            errorAdministration(
-                                violationCode = "badDbResponse",
-                                description = "Unexpected result got. Please, contact administrator",
-                                exception = WrongIdTypeException(
-                                    "createAd for ${this@AdRepoGremlin::class} " +
-                                            "returned id = '$it' that is not admitted by the application"
-                                )
-                            )
-                        )
-                    )
-                }
+        val dbRes = try {
+            g.addV(ad.label())
+                .addMkplAd(ad)
+                .listMkplAd()
+                .toList()
+        } catch (e: Throwable) {
+            if (e is ResponseException || e.cause is ResponseException) {
+                return resultErrorNotFound(key)
             }
-
-        return DbAdResponse(
-            data = ad.copy(id = MkplAdId(id)),
-            isSuccess = true,
-        )
+            return DbAdResponse(
+                data = null,
+                isSuccess = false,
+                errors = listOf(e.asMkplError())
+            )
+        }
+        return when (dbRes.size) {
+            0 -> resultErrorNotFound(key)
+            1 -> DbAdResponse(
+                data = dbRes.first().toMkplAd(),
+                isSuccess = true,
+            )
+            else -> errorDuplication(key)
+        }
     }
 
     override suspend fun readAd(rq: DbAdIdRequest): DbAdResponse {
@@ -100,7 +95,7 @@ class AdRepoGremlin(
             g.V(key).listMkplAd().toList()
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
-                return resultErrorNotFound
+                return resultErrorNotFound(key)
             }
             return DbAdResponse(
                 data = null,
@@ -108,24 +103,13 @@ class AdRepoGremlin(
                 errors = listOf(e.asMkplError())
             )
         }
-        when (dbRes.size) {
-            0 -> return resultErrorNotFound
-            1 -> return DbAdResponse(
+        return when (dbRes.size) {
+            0 -> resultErrorNotFound(key)
+            1 -> DbAdResponse(
                 data = dbRes.first().toMkplAd(),
                 isSuccess = true,
             )
-
-            else -> return DbAdResponse(
-                data = null,
-                isSuccess = false,
-                errors = listOf(
-                    errorAdministration(
-                        violationCode = "duplicateObjects",
-                        description = "Database consistency failure",
-                        exception = DbDuplicatedElementsException("Db contains multiple elements for id = '$key'")
-                    )
-                )
-            )
+            else -> errorDuplication(key)
         }
     }
 
@@ -139,16 +123,16 @@ class AdRepoGremlin(
                 .V(key)
                 .`as`("a")
                 .choose(
-                    select<Vertex, Any>("a")
+                    gr.select<Vertex, Any>("a")
                         .values<String>(FIELD_LOCK)
                         .`is`(oldLock.asString()),
-                    select<Vertex, Vertex>("a").addMkplAd(newAd).listMkplAd(),
-                    select<Vertex, Vertex>("a").listMkplAd(result = RESULT_LOCK_FAILURE)
+                    gr.select<Vertex, Vertex>("a").addMkplAd(newAd).listMkplAd(),
+                    gr.select<Vertex, Vertex>("a").listMkplAd(result = RESULT_LOCK_FAILURE)
                 )
                 .toList()
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
-                return resultErrorNotFound
+                return resultErrorNotFound(key)
             }
             return DbAdResponse(
                 data = null,
@@ -158,18 +142,8 @@ class AdRepoGremlin(
         }
         val adResult = dbRes.firstOrNull()?.toMkplAd()
         return when {
-            adResult == null -> resultErrorNotFound
-            dbRes.size > 1 -> DbAdResponse(
-                data = null,
-                isSuccess = false,
-                errors = listOf(
-                    errorAdministration(
-                        violationCode = "duplicateObjects",
-                        description = "Database consistency failure",
-                        exception = DbDuplicatedElementsException("Db contains multiple elements for id = '$key'")
-                    )
-                )
-            )
+            adResult == null -> resultErrorNotFound(key)
+            dbRes.size > 1 -> errorDuplication(key)
             adResult.lock != newLock -> DbAdResponse(
                 data = adResult,
                 isSuccess = false,
@@ -195,22 +169,20 @@ class AdRepoGremlin(
                 .V(key)
                 .`as`("a")
                 .choose(
-                    select<Vertex, Vertex>("a")
+                    gr.select<Vertex, Vertex>("a")
                         .values<String>(FIELD_LOCK)
                         .`is`(oldLock.asString()),
-                    select<Vertex, Vertex>("a")
-                        .sideEffect(drop<Vertex>())
+                    gr.select<Vertex, Vertex>("a")
+                        .sideEffect(gr.drop<Vertex>())
                         .listMkplAd(),
-//                        .property(FIELD_TMP_RESULT, RESULT_SUCCESS),
-                    select<Vertex,Vertex>("a")
+                    gr.select<Vertex,Vertex>("a")
                         .listMkplAd(result = RESULT_LOCK_FAILURE)
-//                        .property(FIELD_TMP_RESULT, RESULT_LOCK_FAILURE),
                 )
-//                .listMkplAd()
                 .toList()
+
         } catch (e: Throwable) {
             if (e is ResponseException || e.cause is ResponseException) {
-                return resultErrorNotFound
+                return resultErrorNotFound(key)
             }
             return DbAdResponse(
                 data = null,
@@ -221,18 +193,8 @@ class AdRepoGremlin(
         val dbFirst = dbRes.firstOrNull()
         val adResult = dbFirst?.toMkplAd()
         return when {
-            adResult == null -> resultErrorNotFound
-            dbRes.size > 1 -> DbAdResponse(
-                data = null,
-                isSuccess = false,
-                errors = listOf(
-                    errorAdministration(
-                        violationCode = "duplicateObjects",
-                        description = "Database consistency failure",
-                        exception = DbDuplicatedElementsException("Db contains multiple elements for id = '$key'")
-                    )
-                )
-            )
+            adResult == null -> resultErrorNotFound(key)
+            dbRes.size > 1 -> errorDuplication(key)
             dbFirst[FIELD_TMP_RESULT] == RESULT_LOCK_FAILURE -> DbAdResponse(
                 data = adResult,
                 isSuccess = false,
@@ -296,14 +258,26 @@ class AdRepoGremlin(
                 )
             )
         )
-        val resultErrorNotFound = DbAdResponse(
+        fun resultErrorNotFound(key: String) = DbAdResponse(
             isSuccess = false,
             data = null,
             errors = listOf(
                 MkplError(
                     code = "not-found",
                     field = "id",
-                    message = "Not Found"
+                    message = "Not Found object with key $key"
+                )
+            )
+        )
+
+        fun errorDuplication(key: String) = DbAdResponse(
+            data = null,
+            isSuccess = false,
+            errors = listOf(
+                errorAdministration(
+                    violationCode = "duplicateObjects",
+                    description = "Database consistency failure",
+                    exception = DbDuplicatedElementsException("Db contains multiple elements for id = '$key'")
                 )
             )
         )
