@@ -38,7 +38,7 @@ fun GraphTraversal<Vertex, Vertex>.addMkplAd(ad: MkplAd): GraphTraversal<Vertex,
             ad.productId.takeIf { it != MkplProductId.NONE }?.asString()
         )
 
-fun GraphTraversal<Vertex, Vertex>.listMkplAd(result: String? = null): GraphTraversal<Vertex, MutableMap<String, Any>> =
+fun GraphTraversal<Vertex, Vertex>.listMkplAd(result: String = RESULT_SUCCESS): GraphTraversal<Vertex, MutableMap<String, Any>> =
     project<Any?>(
         FIELD_ID,
         FIELD_OWNER_ID,
@@ -52,14 +52,14 @@ fun GraphTraversal<Vertex, Vertex>.listMkplAd(result: String? = null): GraphTrav
     )
         .by(gr.id<Vertex>())
         .by(FIELD_OWNER_ID)
-//        .by(inE("Owns").outV().id())
+//        .by(gr.inE("Owns").outV().id())
         .by(FIELD_LOCK)
         .by(FIELD_TITLE)
         .by(FIELD_DESCRIPTION)
         .by(FIELD_AD_TYPE)
         .by(FIELD_VISIBILITY)
         .by(FIELD_PRODUCT_ID)
-        .by(gr.constant(result ?: RESULT_SUCCESS))
+        .by(gr.constant(result))
 //        .by(elementMap<Vertex, Map<Any?, Any?>>())
 
 fun Map<String, Any?>.toMkplAd(): MkplAd = MkplAd(
