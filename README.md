@@ -88,25 +88,18 @@ Marketplace -- это площадка, на которой пользовате
 1. [ok-marketplace-app-spring](ok-marketplace-app-spring) - Приложение на Spring Framework
 1. [ok-marketplace-app-ktor](ok-marketplace-app-ktor) - Приложение на Ktor JVM/Native
 1. [ok-marketplace-app-knative](ok-marketplace-app-serverless) - Приложение для Yandex.Cloud lambda
-
-[//]: # (1. [ok-marketplace-app-rabbit]&#40;ok-marketplace-app-rabbit&#41; - Микросервис на RabbitMQ)
-
-[//]: # (1. [ok-marketplace-app-kafka]&#40;ok-marketplace-app-kafka&#41; - Микросервис на Kafka)
+1. [ok-marketplace-app-rabbit](ok-marketplace-app-rabbit) - Микросервис на RabbitMQ
+1. [ok-marketplace-app-kafka](ok-marketplace-app-kafka) - Микросервис на Kafka
 
 ## Модули бизнес-логики
 
-[//]: # (1. [ok-marketplace-stubs]&#40;ok-marketplace-stubs&#41; - Стабы для ответов сервиса)
-
-[//]: # (1. [ok-marketplace-biz]&#40;ok-marketplace-biz&#41; - Модуль бизнес-логики приложения)
+1. [ok-marketplace-stubs](ok-marketplace-stubs) - Стабы для ответов сервиса
+1. [ok-marketplace-biz](ok-marketplace-biz) - Модуль бизнес-логики приложения
 
 ## Хранение, репозитории, базы данных
 
-[//]: # (1. [ok-marketplace-repo-test]&#40;ok-marketplace-repo-test&#41; - Базовые тесты для репозиториев всех баз данных)
-
-[//]: # (2. [ok-marketplace-repo-inmemory]&#40;ok-marketplace-repo-inmemory&#41; - Репозиторий на базе кэша в памяти для тестирования)
-
-[//]: # (3. [ok-marketplace-repo-sql]&#40;ok-marketplace-repo-sql&#41; - Репозиторий на базе PostgreSQL)
-
-[//]: # (4. [ok-marketplace-repo-cassandra]&#40;ok-marketplace-repo-cassandra&#41; - Репозиторий на базе Cassandra)
-
-[//]: # (5. [ok-marketplace-repo-gremlin]&#40;ok-marketplace-repo-gremlin&#41; - Репозиторий на базе Apache TinkerPop Gremlin и ArcadeDb)
+1. [ok-marketplace-repo-tests](ok-marketplace-repo-tests) - Базовые тесты для репозиториев всех баз данных
+2. [ok-marketplace-repo-inmemory](ok-marketplace-repo-inmemory) - Репозиторий на базе кэша в памяти для тестирования
+3. [ok-marketplace-repo-postgresql](ok-marketplace-repo-postgresql) - Репозиторий на базе PostgreSQL
+4. [ok-marketplace-repo-cassandra](ok-marketplace-repo-cassandra) - Репозиторий на базе Cassandra
+5. [ok-marketplace-repo-gremlin](ok-marketplace-repo-gremlin) - Репозиторий на базе Apache TinkerPop Gremlin и ArcadeDb
