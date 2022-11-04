@@ -20,6 +20,7 @@ kotlin {
                 implementation(project(":ok-marketplace-common"))
                 implementation(project(":ok-marketplace-stubs"))
                 implementation(project(":ok-marketplace-lib-cor"))
+                implementation(project(":ok-marketplace-auth"))
             }
         }
         @Suppress("UNUSED_VARIABLE")
@@ -30,6 +31,7 @@ kotlin {
 
                 implementation(project(":ok-marketplace-repo-stubs"))
                 implementation(project(":ok-marketplace-repo-tests"))
+                implementation(project(":ok-marketplace-repo-inmemory"))
 
                 api("org.jetbrains.kotlinx:kotlinx-coroutines-test:$coroutinesVersion")
             }

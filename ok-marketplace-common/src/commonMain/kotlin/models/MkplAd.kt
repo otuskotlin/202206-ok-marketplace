@@ -1,5 +1,8 @@
 package ru.otus.otuskotlin.marketplace.common.models
 
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplAdPermissionClient
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplPrincipalRelations
+
 data class MkplAd(
     var id: MkplAdId = MkplAdId.NONE,
     var title: String = "",
@@ -9,10 +12,12 @@ data class MkplAd(
     var visibility: MkplVisibility = MkplVisibility.NONE,
     var productId: MkplProductId = MkplProductId.NONE,
     var lock: MkplAdLock = MkplAdLock.NONE,
-    val permissionsClient: MutableSet<MkplAdPermissionClient> = mutableSetOf()
+    var principalRelations: Set<MkplPrincipalRelations> = emptySet(),
+    val permissionsClient: MutableSet<MkplAdPermissionClient> = mutableSetOf(),
 ) {
     fun deepCopy(): MkplAd = copy(
-        permissionsClient = permissionsClient.toMutableSet()
+        principalRelations = principalRelations.toSet(),
+        permissionsClient = permissionsClient.toMutableSet(),
     )
 
     companion object {

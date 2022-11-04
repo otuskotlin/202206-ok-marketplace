@@ -5,10 +5,14 @@ import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplPrincipalModel
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplUserGroups
+import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 
+private val stub = MkplAdStub.prepareResult { id = MkplAdId("123-234-abc-ABC") }
 @OptIn(ExperimentalCoroutinesApi::class)
 fun validationLockCorrect(command: MkplCommand, processor: MkplAdProcessor) = runTest {
     val ctx = MkplContext(
@@ -22,6 +26,13 @@ fun validationLockCorrect(command: MkplCommand, processor: MkplAdProcessor) = ru
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("123-234-abc-ABC"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)
@@ -43,6 +54,13 @@ fun validationLockTrim(command: MkplCommand, processor: MkplAdProcessor) = runTe
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock(" \n\t 123-234-abc-ABC \n\t "),
         ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
+        ),
     )
     processor.exec(ctx)
     assertEquals(0, ctx.errors.size)
@@ -62,6 +80,13 @@ fun validationLockEmpty(command: MkplCommand, processor: MkplAdProcessor) = runT
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock(""),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)
@@ -85,6 +110,13 @@ fun validationLockFormat(command: MkplCommand, processor: MkplAdProcessor) = run
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("!@#\$%^&*(),.{}"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)

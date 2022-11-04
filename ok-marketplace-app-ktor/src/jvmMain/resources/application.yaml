@@ -8,7 +8,7 @@ ktor:
   application:
     modules:
       - ru.otus.otuskotlin.marketplace.app.ktor.ApplicationKt.module
-#      - ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt.moduleJvm
+      - ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt.moduleJvm
 
 jwt:
   secret: "secret"

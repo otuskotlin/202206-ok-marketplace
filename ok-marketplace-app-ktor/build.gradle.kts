@@ -25,7 +25,6 @@ repositories {
 
 application {
     mainClass.set("io.ktor.server.cio.EngineMain")
-//    mainClass.set("ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt")
 }
 
 kotlin {
@@ -71,7 +70,6 @@ kotlin {
                 implementation(ktor("cors"))
                 implementation(ktor("websockets"))
                 implementation(ktor("config-yaml"))
-//                implementation("io.ktor:ktor-server-auth-jwt:$ktorVersion")
                 implementation("io.ktor:ktor-server-content-negotiation:$ktorVersion")
                 implementation("io.ktor:ktor-serialization-kotlinx-json:$ktorVersion")
                 implementation("io.ktor:ktor-serialization:$ktorVersion")
