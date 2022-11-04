@@ -10,34 +10,40 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import org.junit.Test
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
+import ru.otus.otuskotlin.marketplace.app.ktor.auth.addAuth
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorAuthConfig
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
 import ru.otus.otuskotlin.marketplace.backend.repo.tests.AdRepositoryMock
-import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.common.models.MkplAd
+import ru.otus.otuskotlin.marketplace.common.models.MkplAdLock
+import ru.otus.otuskotlin.marketplace.common.models.MkplDealSide
+import ru.otus.otuskotlin.marketplace.common.models.MkplSettings
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdResponse
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdsResponse
-import java.util.UUID
+import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
-import kotlin.test.assertNotNull
 
 class V1AdMockApiTest {
+    private val stub = MkplAdStub.get()
+    private val userId = stub.ownerId
+    private val adId = stub.id
+
     @Test
     fun create() = testApplication {
-        application {
-            val repo by lazy {
-                AdRepositoryMock(
-                    invokeCreateAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = it.ad.copy(id = MkplAdId(UUID.randomUUID().toString())),
-                        )
-                    }
+        val repo = AdRepositoryMock(
+            invokeCreateAd = {
+                DbAdResponse(
+                    isSuccess = true,
+                    data = it.ad.copy(id = adId),
                 )
             }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+        )
+        val settings = MkplSettings(repoTest = repo)
+        application {
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -56,77 +62,81 @@ class V1AdMockApiTest {
                     mode = AdRequestDebugMode.TEST,
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
         val responseObj = response.body<AdCreateResponse>()
         assertEquals(200, response.status.value)
-        assertNotNull(responseObj.ad?.id)
+        assertEquals(adId.asString(), responseObj.ad?.id)
         assertEquals(createAd.title, responseObj.ad?.title)
         assertEquals(createAd.description, responseObj.ad?.description)
         assertEquals(createAd.adType, responseObj.ad?.adType)
         assertEquals(createAd.visibility, responseObj.ad?.visibility)
+        assertEquals(userId.asString(), responseObj.ad?.ownerId)
     }
 
     @Test
     fun read() = testApplication {
-        application {
-            val repo by lazy {
-                AdRepositoryMock(
-                    invokeReadAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = MkplAd(id = it.id),
-                        )
-                    }
+        val repo = AdRepositoryMock(
+            invokeReadAd = {
+                DbAdResponse(
+                    isSuccess = true,
+                    data = MkplAd(
+                        id = it.id,
+                        ownerId = userId,
+                    ),
                 )
             }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+        )
+        val settings = MkplSettings(repoTest = repo)
+        application {
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
-
-        val adId = "666"
 
         val response = client.post("/v1/ad/read") {
             val requestObj = AdReadRequest(
                 requestId = "12345",
-                ad = AdReadObject(adId),
+                ad = AdReadObject(adId.asString()),
                 debug = AdDebug(
                     mode = AdRequestDebugMode.TEST,
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
         val responseObj = response.body<AdReadResponse>()
         assertEquals(200, response.status.value)
-        assertEquals(adId, responseObj.ad?.id)
+        assertEquals(adId.asString(), responseObj.ad?.id)
     }
 
     @Test
     fun update() = testApplication {
-        application {
-            val repo by lazy {
-                AdRepositoryMock(
-                    invokeReadAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
-                        )
-                    },
-                    invokeUpdateAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = it.ad,
-                        )
-                    }
+        val repo = AdRepositoryMock(
+            invokeReadAd = {
+                DbAdResponse(
+                    isSuccess = true,
+                    data = MkplAd(
+                        id = it.id,
+                        lock = MkplAdLock("123"),
+                        ownerId = userId,
+                    ),
+                )
+            },
+            invokeUpdateAd = {
+                DbAdResponse(
+                    isSuccess = true,
+                    data = it.ad.copy(ownerId = userId),
                 )
             }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+        )
+        val settings by lazy { MkplSettings(repoTest = repo) }
+        application {
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -154,6 +164,7 @@ class V1AdMockApiTest {
                     mode = AdRequestDebugMode.TEST,
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -169,26 +180,32 @@ class V1AdMockApiTest {
     @Test
     fun delete() = testApplication {
         application {
-            val repo by lazy {
-                AdRepositoryMock(
-                    invokeReadAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = MkplAd(id = it.id, lock = MkplAdLock("123")),
-                        )
-                    },
-                    invokeDeleteAd = {
-                        DbAdResponse(
-                            isSuccess = true,
-                            data = MkplAd(id = it.id),
-                        )
-                    }
-                )
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+            val repo = AdRepositoryMock(
+                invokeReadAd = {
+                    DbAdResponse(
+                        isSuccess = true,
+                        data = MkplAd(
+                            id = it.id,
+                            lock = MkplAdLock("123"),
+                            ownerId = userId,
+                        ),
+                    )
+                },
+                invokeDeleteAd = {
+                    DbAdResponse(
+                        isSuccess = true,
+                        data = MkplAd(
+                            id = it.id,
+                            ownerId = userId,
+                        ),
+                    )
+                }
+            )
+            val settings by lazy { MkplSettings(repoTest = repo) }
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
+
         val client = myClient()
 
         val deleteId = "666"
@@ -204,6 +221,7 @@ class V1AdMockApiTest {
                     mode = AdRequestDebugMode.TEST,
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -231,9 +249,9 @@ class V1AdMockApiTest {
                     }
                 )
             }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+            val settings by lazy { MkplSettings(repoTest = repo) }
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -245,6 +263,7 @@ class V1AdMockApiTest {
                     mode = AdRequestDebugMode.TEST,
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -259,10 +278,10 @@ class V1AdMockApiTest {
             val repo by lazy {
                 AdRepositoryMock(
                     invokeReadAd = {
-                       DbAdResponse(
-                           isSuccess = true,
-                           data = MkplAd(id = it.id)
-                       )
+                        DbAdResponse(
+                            isSuccess = true,
+                            data = MkplAd(id = it.id)
+                        )
                     },
                     invokeSearchAd = {
                         DbAdsResponse(
@@ -271,20 +290,20 @@ class V1AdMockApiTest {
                                 MkplAd(
                                     title = it.titleFilter,
                                     ownerId = it.ownerId,
-                                    adType = when(it.dealSide){
-                                                MkplDealSide.DEMAND -> MkplDealSide.SUPPLY
-                                                MkplDealSide.SUPPLY -> MkplDealSide.DEMAND
-                                                MkplDealSide.NONE -> MkplDealSide.NONE
-                                              },
+                                    adType = when (it.dealSide) {
+                                        MkplDealSide.DEMAND -> MkplDealSide.SUPPLY
+                                        MkplDealSide.SUPPLY -> MkplDealSide.DEMAND
+                                        MkplDealSide.NONE -> MkplDealSide.NONE
+                                    },
                                 )
                             ),
                         )
                     }
                 )
             }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
-            moduleJvm(settigs)
+            val settings by lazy { MkplSettings(repoTest = repo) }
+            module(settings, authConfig = KtorAuthConfig.TEST)
+            moduleJvm(settings, authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -299,6 +318,7 @@ class V1AdMockApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(id = userId.asString(), config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }

@@ -1,0 +1,13 @@
+ktor:
+  development: true
+  deployment:
+    port: 8080
+    watch:
+      - classes
+      - resources
+
+jwt:
+  secret: "secret"
+  issuer: "OtusKotlin"
+  audience: "ad-users"
+  realm: "mp-ads"

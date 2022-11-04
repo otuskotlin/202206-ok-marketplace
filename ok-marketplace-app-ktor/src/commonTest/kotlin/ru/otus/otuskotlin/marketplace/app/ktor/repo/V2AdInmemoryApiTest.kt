@@ -8,6 +8,8 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import ru.otus.otuskotlin.marketplace.api.v2.apiV2Mapper
 import ru.otus.otuskotlin.marketplace.api.v2.models.*
+import ru.otus.otuskotlin.marketplace.app.ktor.auth.addAuth
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorAuthConfig
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.common.models.*
 import ru.otus.otuskotlin.marketplace.repo.inmemory.AdRepoInMemory
@@ -38,12 +40,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun create() = testApplication {
+        val repo = AdRepoInMemory(randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val createAd = AdCreateObject(
@@ -62,6 +62,7 @@ class V2AdInmemoryApiTest {
                 )
             )
             contentType(ContentType.Application.Json)
+            addAuth(config = KtorAuthConfig.TEST)
             val requestJson = apiV2Mapper.encodeToString(requestObj)
             setBody(requestJson)
         }
@@ -77,12 +78,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun read() = testApplication {
+        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val response = client.post("/v2/ad/read") {
@@ -105,12 +104,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun update() = testApplication {
+        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val adUpdate = AdUpdateObject(
@@ -146,12 +143,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun delete() = testApplication {
+        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val response = client.post("/v2/ad/delete") {
@@ -177,12 +172,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun search() = testApplication {
+        val repo = AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(initObjects = listOf(initAd), randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val response = client.post("/v2/ad/search") {
@@ -206,12 +199,10 @@ class V2AdInmemoryApiTest {
 
     @Test
     fun offers() = testApplication {
+        val repo = AdRepoInMemory(initObjects = listOf(initAd, initAdSupply), randomUuid = { uuidNew })
+        val settings = MkplSettings(repoTest = repo)
         application {
-            val repo by lazy {
-                AdRepoInMemory(initObjects = listOf(initAd, initAdSupply), randomUuid = { uuidNew })
-            }
-            val settigs by lazy { MkplSettings(repoTest = repo) }
-            module(settigs)
+            module(settings, authConfig = KtorAuthConfig.TEST)
         }
 
         val response = client.post("/v2/ad/offers") {
