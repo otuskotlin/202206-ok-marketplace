@@ -68,3 +68,5 @@ include("ok-marketplace-repo-gremlin")
 include("ok-marketplace-auth")
 
 include("ok-marketplace-logging")
+include("ok-marketplace-api-logs")
+include("ok-marketplace-logs-mapper")
