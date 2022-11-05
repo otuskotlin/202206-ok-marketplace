@@ -1,0 +1,100 @@
+openapi: 3.0.4
+info:
+  title: Marketplace log models
+  description: Log models for logging services of marketplace
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+paths:
+  /log:
+    get:
+      responses:
+        200:
+          description: logs
+          content: {}
+
+components:
+  schemas:
+    CommonLogModel:
+      title: Общая модель лога
+      description: Общая модель лога для всех микросервисов системы
+      type: object
+      properties:
+        messageTime:
+          type: string
+        logId:
+          type: string
+        source:
+          type: string
+        marketplace:
+          $ref: '#/components/schemas/MkplLogModel'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/ErrorLogModel'
+
+    MkplLogModel:
+      title: Модель лога для микросервиса Marketplace
+      type: object
+      properties:
+        requestId:
+          type: string
+        requestAd:
+          $ref: '#/components/schemas/AdLog'
+        requestFilter:
+          $ref: '#/components/schemas/AdFilterLog'
+        responseAd:
+          $ref: '#/components/schemas/AdLog'
+        responseAds:
+          type: array
+          items:
+            $ref: '#/components/schemas/AdLog'
+
+    ErrorLogModel:
+      title: Модель лога для ошибки
+      type: object
+      properties:
+        message:
+          type: string
+        field:
+          type: string
+        code:
+          type: string
+        level:
+          type: string
+
+    AdLog:
+      title: Модель лога для объявления
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        description:
+          type: string
+        adType:
+          type: string
+        visibility:
+          type: string
+        ownerId:
+          type: string
+        productId:
+          type: string
+        permissions:
+          type: array
+          uniqueItems: true
+          items:
+            type: string
+
+    AdFilterLog:
+      title: Модель лога фильтра
+      properties:
+        searchString:
+          type: string
+        ownerId:
+          type: string
+        dealSide:
+          type: string
+
