@@ -43,6 +43,11 @@ dependencies {
     // business-logic
     implementation(project(":ok-marketplace-biz"))
 
+    // Logging
+    implementation(project(":ok-marketplace-logging"))
+    implementation(project(":ok-marketplace-logs-mapper"))
+    implementation(project(":ok-marketplace-api-logs"))
+
     // tests
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 
