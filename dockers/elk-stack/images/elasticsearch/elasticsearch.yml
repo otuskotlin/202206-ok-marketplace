@@ -1,0 +1,7 @@
+node.name: elasticsearch
+#cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+#network.host: localhost
+#discovery.seed_hosts: []
+#cluster.initial_master_nodes: ["elasticsearch"]
+discovery.type: single-node
