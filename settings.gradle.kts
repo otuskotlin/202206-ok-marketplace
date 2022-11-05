@@ -64,3 +64,5 @@ include("ok-marketplace-repo-tests")
 include("ok-marketplace-repo-postgresql")
 include("ok-marketplace-repo-cassandra")
 include("ok-marketplace-repo-gremlin")
+
+include("ok-marketplace-logging")
