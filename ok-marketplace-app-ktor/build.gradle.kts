@@ -59,6 +59,9 @@ kotlin {
                 implementation(project(":ok-marketplace-mappers-v2"))
                 implementation(project(":ok-marketplace-stubs"))
                 implementation(project(":ok-marketplace-repo-inmemory"))
+                implementation(project(":ok-marketplace-logging"))
+                implementation(project(":ok-marketplace-logs-mapper"))
+                implementation(project(":ok-marketplace-api-logs"))
 
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-core:$serializationVersion")
                 implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:$serializationVersion")
@@ -122,6 +125,12 @@ kotlin {
                 // Stubs
                 implementation(project(":ok-marketplace-stubs"))
                 implementation(project(":ok-marketplace-biz"))
+
+                // Logging
+                implementation(project(":ok-marketplace-logging"))
+                implementation(project(":ok-marketplace-logs-mapper"))
+                implementation(project(":ok-marketplace-api-logs"))
+                
             }
         }
         @Suppress("UNUSED_VARIABLE")
