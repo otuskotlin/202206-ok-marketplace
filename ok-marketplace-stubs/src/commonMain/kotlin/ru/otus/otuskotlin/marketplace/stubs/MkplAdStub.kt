@@ -1,6 +1,7 @@
 package ru.otus.otuskotlin.marketplace.stubs
 
 import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplAdPermissionClient
 
 object MkplAdStub {
     fun get() = MkplAd(

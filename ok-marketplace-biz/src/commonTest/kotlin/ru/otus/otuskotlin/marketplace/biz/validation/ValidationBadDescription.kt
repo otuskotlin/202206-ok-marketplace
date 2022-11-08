@@ -5,9 +5,14 @@ import kotlinx.coroutines.test.runTest
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplPrincipalModel
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplUserGroups
+import ru.otus.otuskotlin.marketplace.stubs.MkplAdStub
 import kotlin.test.assertContains
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
+
+private val stub = MkplAdStub.get()
 
 @OptIn(ExperimentalCoroutinesApi::class)
 fun validationDescriptionCorrect(command: MkplCommand, processor: MkplAdProcessor) = runTest {
@@ -16,12 +21,19 @@ fun validationDescriptionCorrect(command: MkplCommand, processor: MkplAdProcesso
         state = MkplState.NONE,
         workMode = MkplWorkMode.TEST,
         adRequest = MkplAd(
-            id = MkplAdId("123"),
+            id = stub.id,
             title = "abc",
             description = "abc",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("123-234-abc-ABC"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)
@@ -37,12 +49,19 @@ fun validationDescriptionTrim(command: MkplCommand, processor: MkplAdProcessor) 
         state = MkplState.NONE,
         workMode = MkplWorkMode.TEST,
         adRequest = MkplAd(
-            id = MkplAdId("123"),
+            id = stub.id,
             title = "abc",
             description = " \n\tabc \n\t",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("123-234-abc-ABC"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)
@@ -58,12 +77,19 @@ fun validationDescriptionEmpty(command: MkplCommand, processor: MkplAdProcessor)
         state = MkplState.NONE,
         workMode = MkplWorkMode.TEST,
         adRequest = MkplAd(
-            id = MkplAdId("123"),
+            id = stub.id,
             title = "abc",
             description = "",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("123-234-abc-ABC"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)
@@ -81,12 +107,19 @@ fun validationDescriptionSymbols(command: MkplCommand, processor: MkplAdProcesso
         state = MkplState.NONE,
         workMode = MkplWorkMode.TEST,
         adRequest = MkplAd(
-            id = MkplAdId("123"),
+            id = stub.id,
             title = "abc",
             description = "!@#$%^&*(),.{}",
             adType = MkplDealSide.DEMAND,
             visibility = MkplVisibility.VISIBLE_PUBLIC,
             lock = MkplAdLock("123-234-abc-ABC"),
+        ),
+        principal = MkplPrincipalModel(
+            id = stub.ownerId,
+            groups = setOf(
+                MkplUserGroups.USER,
+                MkplUserGroups.TEST,
+            )
         ),
     )
     processor.exec(ctx)

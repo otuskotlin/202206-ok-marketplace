@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.common.models
+package ru.otus.otuskotlin.marketplace.common.permissions
 
 enum class MkplAdPermissionClient {
     READ,

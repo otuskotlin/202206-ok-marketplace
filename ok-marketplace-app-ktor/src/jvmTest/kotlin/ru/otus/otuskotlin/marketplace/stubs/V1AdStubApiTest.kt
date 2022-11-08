@@ -10,6 +10,8 @@ import io.ktor.serialization.jackson.*
 import io.ktor.server.testing.*
 import org.junit.Test
 import ru.otus.otuskotlin.marketplace.api.v1.models.*
+import ru.otus.otuskotlin.marketplace.app.ktor.auth.addAuth
+import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorAuthConfig
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
 import kotlin.test.assertEquals
@@ -18,8 +20,8 @@ class V1AdStubApiTest {
     @Test
     fun create() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -37,6 +39,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -49,8 +52,8 @@ class V1AdStubApiTest {
     @Test
     fun read() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -63,6 +66,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -74,8 +78,8 @@ class V1AdStubApiTest {
     @Test
     fun update() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -94,6 +98,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -105,8 +110,8 @@ class V1AdStubApiTest {
     @Test
     fun delete() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -121,6 +126,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -132,8 +138,8 @@ class V1AdStubApiTest {
     @Test
     fun search() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -146,6 +152,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }
@@ -157,8 +164,8 @@ class V1AdStubApiTest {
     @Test
     fun offers() = testApplication {
         application {
-            module()
-            moduleJvm()
+            module(authConfig = KtorAuthConfig.TEST)
+            moduleJvm(authConfig = KtorAuthConfig.TEST)
         }
         val client = myClient()
 
@@ -173,6 +180,7 @@ class V1AdStubApiTest {
                     stub = AdRequestDebugStubs.SUCCESS
                 )
             )
+            addAuth(config = KtorAuthConfig.TEST)
             contentType(ContentType.Application.Json)
             setBody(requestObj)
         }

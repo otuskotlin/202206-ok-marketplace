@@ -1,0 +1,17 @@
+ktor:
+  development: true
+  deployment:
+    port: 8080
+    watch:
+      - classes
+      - resources
+  application:
+    modules:
+      - ru.otus.otuskotlin.marketplace.app.ktor.ApplicationKt.module
+      - ru.otus.otuskotlin.marketplace.app.ktor.ApplicationJvmKt.moduleJvm
+
+jwt:
+  secret: "secret"
+  issuer: "OtusKotlin"
+  audience: "ad-users"
+  realm: "mp-ads"

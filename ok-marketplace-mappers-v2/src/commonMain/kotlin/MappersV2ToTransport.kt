@@ -3,6 +3,7 @@ package ru.otus.otuskotlin.marketplace.mappers.v2
 import ru.otus.otuskotlin.marketplace.api.v2.models.*
 import ru.otus.otuskotlin.marketplace.common.MkplContext
 import ru.otus.otuskotlin.marketplace.common.models.*
+import ru.otus.otuskotlin.marketplace.common.permissions.MkplAdPermissionClient
 import ru.otus.otuskotlin.marketplace.mappers.v2.exceptions.UnknownMkplCommand
 
 fun MkplContext.toTransportAd(): IResponse = when (val cmd = command) {
