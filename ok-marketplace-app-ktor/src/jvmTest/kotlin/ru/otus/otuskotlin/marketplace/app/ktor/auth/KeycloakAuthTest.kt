@@ -28,7 +28,7 @@ class KeycloakAuthTest {
 
     @Test
     fun keycloak() = testApplication {
-        val authConfig = KtorAuthConfig.TEST.copy(secret = "MIICvzCCAacCBgGEWPQnCDANBgkqhkiG9w0BAQsFADAjMSEwHwYDVQQDDBhvdHVzLW1hcmtldHBsYWNlLXNlcnZpY2UwHhcNMjIxMTA4MjAzMzI2WhcNMzIxMTA4MjAzNTA2WjAjMSEwHwYDVQQDDBhvdHVzLW1hcmtldHBsYWNlLXNlcnZpY2UwggEiMA0GCSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQC0h/Zr2DTJW5jzGyoiJZMjHr03bNx+MiDPQaDdrWnhXWhqBkLX4VVcC3Ec9yQyN+rkG5lDt5wmxO8HAozvIpHQwCyzWy83EDatsUWKNioviJ5ISgdIfYoyIdIqU5M29VDH14t1loGfm7Dte6sM27d176t2GQfZj3ZW8BH8uRjBf0Vx0K0D5ICPb3OhO67fFBCdHUS+LvQDX+OTqAUlJYpMINiA4APNmqBLT7c5SA6+cHrWW/DXxVD37JmvbJMrgdCeAhnXhrEuq0FklCzOSCkd+0fhdj5v8ZdMSEpvxMAgmxYXT7g0mhJmL9zUFcufF6N5xemfUriSsqoNDry/v58lAgMBAAEwDQYJKoZIhvcNAQELBQADggEBAC29uWUAulgvQi3iP/olMXnUFi0dhJiRmLfMgXPVPC35w8LP+BD3xqj1RJlD0G8I5l8+GwAfjFHoTJmGNH8/KrLIErA0CIwyQoYDbp9O8n9F8TgMb/JDoCuNrrTpA+xOP6BDmlqAMLZc0LSZ+MnuxnESy9iec6uwKNTwaNXwN5ZT7HsQ98U0moy6mnuwIRJovJyQ6zPSteH8J2AoxA5uUu9R3R9rd2dAzPZARU9u1C7U+eXqkEUFl/eLFCmZibm9lljryaQ/Xi0Dm0PEX9E9IS+nAvBr3DIj+yaeimlH17y3tqbrwY90Ol+zgvBuaAe63yX8nQRnpiUIqPQqbAIvyT8=")
+        val authConfig = KtorAuthConfig.TEST
 
         // Server settings
         val uuidNew = "eee"
@@ -73,7 +73,6 @@ class KeycloakAuthTest {
     object UserCred {
         const val user: String = "otus-test"
         const val pass: String = "otus-pass"
-        const val id: String = "6388dab0-b8cd-495b-89d4-4fbf4b7a1912"
     }
 
     object KeycloakSettings {
@@ -120,6 +119,7 @@ class KeycloakAuthTest {
                     }
                     println(resp.bodyAsText())
                     val om = ObjectMapper()
+//                    Какой-то баз, не работает штатное преобразование
 //                    val tokenInfo: TokenInfo = resp.body()
                     val tokenInfo: TokenInfo = om.readValue(resp.bodyAsText(), TokenInfo::class.java)
                     bearerToken = BearerTokens(
