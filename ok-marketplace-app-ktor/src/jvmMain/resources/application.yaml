@@ -15,3 +15,4 @@ jwt:
   issuer: "OtusKotlin"
   audience: "ad-users"
   realm: "mp-ads"
+  clientId: "otus-marketplace-service"

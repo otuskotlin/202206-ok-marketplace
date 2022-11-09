@@ -20,10 +20,9 @@ fun JWTPrincipal?.toModel() = this?.run {
             .getClaim(GROUPS_CLAIM)
             ?.asList(String::class.java)
             ?.mapNotNull {
-                try {
-                    MkplUserGroups.valueOf(it)
-                } catch (e: Throwable) {
-                    null
+                when(it) {
+                    "/USER" -> MkplUserGroups.USER
+                    else -> null
                 }
             }?.toSet() ?: emptySet()
     )

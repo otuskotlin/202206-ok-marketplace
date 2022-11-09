@@ -1,13 +1,12 @@
 package ru.otus.otuskotlin.marketplace.app.ktor
 
+import com.auth0.jwk.UrlJwkProvider
 import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import io.ktor.serialization.jackson.*
 import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
-import io.ktor.server.cio.*
-import io.ktor.server.engine.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.routing.*
@@ -23,33 +22,8 @@ import ru.otus.otuskotlin.marketplace.app.ktor.v1.v1Offer
 import ru.otus.otuskotlin.marketplace.biz.MkplAdProcessor
 import ru.otus.otuskotlin.marketplace.common.models.MkplSettings
 import ru.otus.otuskotlin.marketplace.repo.inmemory.AdRepoInMemory
-
-@Suppress("unused") // Referenced in application.conf
-fun main() {
-    embeddedServer(CIO, environment = applicationEngineEnvironment {
-//        val conf = YamlConfigLoader().load("./application.yaml")
-//            ?: throw RuntimeException("Cannot read application.yaml")
-//        println(conf)
-//        config = conf
-//        println("File read")
-
-        module {
-            module()
-            moduleJvm()
-        }
-        connector {
-            port =  8080
-            host =  "0.0.0.0"
-        }
-    }).apply {
-//        addShutdownHook {
-//            println("Stop is requested")
-//            stop(3000, 5000)
-//            println("Exiting")
-//        }
-        start(true)
-    }
-}
+import java.net.URL
+import java.security.interfaces.RSAPublicKey
 
 fun Application.moduleJvm(
     settings: MkplSettings? = null,
@@ -67,19 +41,34 @@ fun Application.moduleJvm(
     install(Authentication) {
         jwt("auth-jwt") {
             realm = authConfig.realm
-            verifier(
+
+            verifier {
+                val token = it.render().replace(it.authScheme, "").trim()
+                val x = JWT.decode(token)
+                val keyId = x.keyId
+                val provider =
+                    UrlJwkProvider(URL("http://localhost:8081/auth/realms/${KtorAuthConfig.TEST.realm}/protocol/openid-connect/certs"))
+                val jwk = provider.get(keyId)
+                val publicKey = jwk.publicKey
+                if (publicKey !is RSAPublicKey) {
+                    throw IllegalArgumentException("Key with ID was found in JWKS but is not a RSA-key.")
+                }
+                val algorithm = Algorithm.RSA256(publicKey, null)
+
                 JWT
-                    .require(Algorithm.HMAC256(authConfig.secret))
-                    .withAudience(authConfig.audience)
-                    .withIssuer(authConfig.issuer)
+                    .require(algorithm)
+//                    .withAudience(authConfig.audience)
+//                    .withIssuer(authConfig.issuer)
                     .build()
-            )
+            }
             validate { jwtCredential: JWTCredential ->
+//                JWTPrincipal(jwtCredential.payload)
                 when {
                     jwtCredential.payload.getClaim(GROUPS_CLAIM).asList(String::class.java).isNullOrEmpty() -> {
                         this@moduleJvm.log.error("Groups claim must not be empty in JWT token")
                         null
                     }
+
                     else -> JWTPrincipal(jwtCredential.payload)
                 }
             }
