@@ -1,0 +1,214 @@
+### Token by password
+POST http://localhost:8081/auth/realms/otus-marketplace/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=otus-marketplace-service&grant_type=password&username=otus-test&password=otus-pass
+
+> {% client.global.set("auth_token", response.body.access_token);
+client.global.set("refresh_token", response.body.refresh_token); %}
+
+### Token by refresh token
+POST http://localhost:8081/auth/realms/otus-marketplace/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=otus-marketplace-service&grant_type=refresh_token&refresh_token={{refresh_token}}
+
+
+### Create
+POST http://127.0.0.1:8080/v1/ad/create
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "create",
+  "requestId": "12345",
+  "ad": {
+    "title": "Болт",
+    "description": "КРУТЕЙШИЙ",
+    "ownerId": "9435",
+    "visibility": "public",
+    "adType": "demand"
+  },
+  "debug": {
+    "mode": "test"
+  }
+}
+
+### Get unexisted ID
+POST http://127.0.0.1:8080/v1/ad/read
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "ad": {
+    "id": "99999"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Read With Existed id
+POST http://127.0.0.1:8080/v1/ad/read
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "read",
+  "requestId": "12345",
+  "ad": {
+    "id": "existed"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update
+POST http://localhost:8080/v1/ad/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "ad": {
+    "adType": "proposal",
+    "id": "updated",
+    "visibility": "ownerOnly"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Update with unexistedId
+POST http://localhost:8080/v1/ad/update
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "update",
+  "requestId": "666",
+  "ad": {
+    "id": "668"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Delete existed
+POST http://localhost:8080/v1/ad/delete
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId",
+  "ad": {
+    "id": "existed_id"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Delete non-existed
+POST http://localhost:8080/v1/ad/delete
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "delete",
+  "requestId": "deleteId_unknown",
+  "ad": {
+    "id": "unknownId"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Search by string
+POST http://localhost:8080/v1/ad/search
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "adFilter": {
+    "searchString": "болт"
+  },
+  "debug": {
+    "stub": "success"
+  }
+}
+
+### Search by string with error
+POST http://localhost:8080/v1/ad/search
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "search",
+  "requestId": "search_1",
+  "adFilter": {
+    "searchString": "кто тут"
+  },
+  "debug": {
+    "stub": "badSearchString"
+  }
+}
+
+### Search offer by unknown id
+POST http://localhost:8080/v1/ad/offers
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search",
+  "ad": {
+    "id": "222_unknown_offer_id"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}
+
+### Find offer
+POST http://localhost:8080/v1/ad/offers
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search",
+  "ad": {
+    "id": "234_offer"
+  },
+  "debug": {
+    "mode": "stub",
+    "stub": "success"
+  }
+}
+
+### Not find offer
+POST http://localhost:8080/ad/offers
+Content-Type: application/json
+Authorization: Bearer {{auth_token}}
+
+{
+  "requestType": "offers",
+  "requestId": "offer_search_bad",
+  "ad": {
+    "id": "234_offer"
+  },
+  "debug": {
+    "stub": "badId"
+  }
+}

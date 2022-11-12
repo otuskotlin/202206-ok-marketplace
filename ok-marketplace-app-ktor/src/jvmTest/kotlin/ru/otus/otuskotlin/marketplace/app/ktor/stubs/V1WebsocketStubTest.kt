@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.stubs
+package ru.otus.otuskotlin.marketplace.app.ktor.stubs
 
 import io.ktor.client.plugins.websocket.*
 import io.ktor.server.testing.*

@@ -14,6 +14,9 @@ fun ICorChainDsl<MkplContext>.repoPrepareUpdate(title: String) = worker {
         adRepoPrepare = adRepoRead.deepCopy().apply {
             this.title = adValidated.title
             description = adValidated.description
+            adType = adValidated.adType
+            visibility = adValidated.visibility
+            lock = adValidated.lock
         }
     }
 }

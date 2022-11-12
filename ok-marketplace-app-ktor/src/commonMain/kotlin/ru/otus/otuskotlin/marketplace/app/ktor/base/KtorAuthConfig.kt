@@ -7,16 +7,20 @@ data class KtorAuthConfig(
     val issuer: String,
     val audience: String,
     val realm: String,
+    val clientId: String,
+    val certUrl: String? = null,
 ) {
     constructor(environment: ApplicationEnvironment): this(
-        secret = environment.config.property("jwt.secret").getString(),
+        secret = environment.config.propertyOrNull("jwt.secret")?.getString() ?: "",
         issuer = environment.config.property("jwt.issuer").getString(),
         audience = environment.config.property("jwt.audience").getString(),
-        realm = environment.config.property("jwt.realm").getString()
+        realm = environment.config.property("jwt.realm").getString(),
+        clientId = environment.config.property("jwt.clientId").getString(),
+        certUrl = environment.config.propertyOrNull("jwt.certUrl")?.getString(),
     )
 
     companion object {
-        const val ID_CLAIM = "id"
+        const val ID_CLAIM = "sub"
         const val GROUPS_CLAIM = "groups"
         const val F_NAME_CLAIM = "fname"
         const val M_NAME_CLAIM = "mname"
@@ -26,7 +30,8 @@ data class KtorAuthConfig(
                 secret = "secret",
                 issuer = "OtusKotlin",
                 audience = "ad-users",
-                realm = "Access to Ads"
+                realm = "otus-marketplace",
+                clientId = "otus-marketplace-service",
             )
     }
 }

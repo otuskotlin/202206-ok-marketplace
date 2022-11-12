@@ -1,4 +1,4 @@
-package ru.otus.otuskotlin.marketplace.repo
+package ru.otus.otuskotlin.marketplace.app.ktor.repo
 
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.SerializationFeature

@@ -1,9 +1,8 @@
-package ru.otus.otuskotlin.marketplace.auth
+package ru.otus.otuskotlin.marketplace.app.ktor.auth
 
 import io.ktor.client.request.*
 import io.ktor.server.testing.*
 import org.junit.Test
-import ru.otus.otuskotlin.marketplace.app.ktor.auth.addAuth
 import ru.otus.otuskotlin.marketplace.app.ktor.base.KtorAuthConfig
 import ru.otus.otuskotlin.marketplace.app.ktor.module
 import ru.otus.otuskotlin.marketplace.app.ktor.moduleJvm
