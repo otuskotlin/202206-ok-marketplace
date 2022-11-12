@@ -7,6 +7,7 @@ import io.ktor.server.application.*
 import io.ktor.server.auth.*
 import io.ktor.server.auth.jwt.*
 import io.ktor.server.cio.*
+import io.ktor.server.config.yaml.*
 import io.ktor.server.engine.*
 import io.ktor.server.plugins.callloging.*
 import io.ktor.server.plugins.contentnegotiation.*
@@ -27,16 +28,16 @@ import ru.otus.otuskotlin.marketplace.repo.inmemory.AdRepoInMemory
 @Suppress("unused") // Referenced in application.conf
 fun main() {
     embeddedServer(CIO, environment = applicationEngineEnvironment {
-//        val conf = YamlConfigLoader().load("./application.yaml")
-//            ?: throw RuntimeException("Cannot read application.yaml")
+        val conf = YamlConfigLoader().load("./application.yaml")
+            ?: throw RuntimeException("Cannot read application.yaml")
 //        println(conf)
-//        config = conf
+        config = conf
 //        println("File read")
 
-        module {
-            module()
-            moduleJvm()
-        }
+//        module {
+//            module()
+//            moduleJvm()
+//        }
         connector {
             port =  8080
             host =  "0.0.0.0"
