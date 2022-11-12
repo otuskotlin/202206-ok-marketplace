@@ -10,14 +10,7 @@ fun ICorChainDsl<MkplContext>.repoUpdate(title: String) = worker {
     this.title = title
     on { state == MkplState.RUNNING }
     handle {
-        val request = DbAdRequest(
-            adRepoPrepare.deepCopy().apply {
-                this.title = adValidated.title
-                description = adValidated.description
-                adType = adValidated.adType
-                visibility = adValidated.visibility
-            }
-        )
+        val request = DbAdRequest(adRepoPrepare)
         val result = adRepo.updateAd(request)
         val resultAd = result.data
         if (result.isSuccess && resultAd != null) {

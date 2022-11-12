@@ -21,7 +21,7 @@ fun JWTPrincipal?.toModel() = this?.run {
             ?.asList(String::class.java)
             ?.mapNotNull {
                 when(it) {
-                    "/USER" -> MkplUserGroups.USER
+                    "USER" -> MkplUserGroups.USER
                     else -> null
                 }
             }?.toSet() ?: emptySet()

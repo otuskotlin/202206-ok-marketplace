@@ -29,6 +29,11 @@ class KeycloakAuthTest {
     @Test
     fun keycloak() = testApplication {
         val authConfig = KtorAuthConfig.TEST
+            .copy(
+                certUrl = "${KeycloakSettings.host}/auth/realms/${KtorAuthConfig.TEST.realm}" +
+                        "/protocol/openid-connect/certs",
+                issuer = "${KeycloakSettings.host}/auth/realms/${KtorAuthConfig.TEST.realm}",
+            )
 
         // Server settings
         val uuidNew = "eee"
@@ -76,7 +81,7 @@ class KeycloakAuthTest {
     }
 
     object KeycloakSettings {
-        private const val host: String = "http://localhost:8081"
+        const val host: String = "http://localhost:8081"
         val authActionUrl =
             "$host/auth/realms/${KtorAuthConfig.TEST.realm}/protocol/openid-connect/token"
     }

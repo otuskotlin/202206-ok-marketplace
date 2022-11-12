@@ -7,7 +7,9 @@ ktor:
       - resources
 
 jwt:
-  secret: "secret"
-  issuer: "OtusKotlin"
+#  secret: "secret"
+  issuer: "http://localhost:8081/auth/realms/otus-marketplace"
   audience: "ad-users"
-  realm: "mp-ads"
+  realm: "otus-marketplace"
+  clientId: "otus-marketplace-service"
+  certUrl: "http://localhost:8081/auth/realms/otus-marketplace/protocol/openid-connect/certs"

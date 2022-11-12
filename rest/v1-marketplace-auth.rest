@@ -1,6 +1,23 @@
+### Token by password
+POST http://localhost:8081/auth/realms/otus-marketplace/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=otus-marketplace-service&grant_type=password&username=otus-test&password=otus-pass
+
+> {% client.global.set("auth_token", response.body.access_token);
+client.global.set("refresh_token", response.body.refresh_token); %}
+
+### Token by refresh token
+POST http://localhost:8081/auth/realms/otus-marketplace/protocol/openid-connect/token
+Content-Type: application/x-www-form-urlencoded
+
+client_id=otus-marketplace-service&grant_type=refresh_token&refresh_token={{refresh_token}}
+
+
 ### Create
 POST http://127.0.0.1:8080/v1/ad/create
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "create",
@@ -20,6 +37,7 @@ Content-Type: application/json
 ### Get unexisted ID
 POST http://127.0.0.1:8080/v1/ad/read
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "read",
@@ -35,6 +53,7 @@ Content-Type: application/json
 ### Read With Existed id
 POST http://127.0.0.1:8080/v1/ad/read
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "read",
@@ -50,6 +69,7 @@ Content-Type: application/json
 ### Update
 POST http://localhost:8080/v1/ad/update
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "update",
@@ -67,6 +87,7 @@ Content-Type: application/json
 ### Update with unexistedId
 POST http://localhost:8080/v1/ad/update
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "update",
@@ -82,6 +103,7 @@ Content-Type: application/json
 ### Delete existed
 POST http://localhost:8080/v1/ad/delete
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "delete",
@@ -97,6 +119,7 @@ Content-Type: application/json
 ### Delete non-existed
 POST http://localhost:8080/v1/ad/delete
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "delete",
@@ -112,6 +135,7 @@ Content-Type: application/json
 ### Search by string
 POST http://localhost:8080/v1/ad/search
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "search",
@@ -127,6 +151,7 @@ Content-Type: application/json
 ### Search by string with error
 POST http://localhost:8080/v1/ad/search
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "search",
@@ -142,6 +167,7 @@ Content-Type: application/json
 ### Search offer by unknown id
 POST http://localhost:8080/v1/ad/offers
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "offers",
@@ -157,6 +183,7 @@ Content-Type: application/json
 ### Find offer
 POST http://localhost:8080/v1/ad/offers
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "offers",
@@ -173,6 +200,7 @@ Content-Type: application/json
 ### Not find offer
 POST http://localhost:8080/ad/offers
 Content-Type: application/json
+Authorization: Bearer {{auth_token}}
 
 {
   "requestType": "offers",
@@ -184,7 +212,3 @@ Content-Type: application/json
     "stub": "badId"
   }
 }
-
-
-
-
