@@ -1,6 +1,8 @@
 ### Create
 POST http://127.0.0.1:8080/v2/ad/create
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "create",
@@ -20,6 +22,8 @@ Content-Type: application/json
 ### Get unexisted ID
 POST http://127.0.0.1:8080/v2/ad/read
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "read",
@@ -36,6 +40,8 @@ Content-Type: application/json
 ### Read With Existed id
 POST http://127.0.0.1:8080/v2/ad/read
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "read",
@@ -51,6 +57,8 @@ Content-Type: application/json
 ### Update
 POST http://localhost:8080/v2/ad/update
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "update",
@@ -68,6 +76,8 @@ Content-Type: application/json
 ### Update with unexistedId
 POST http://localhost:8080/v2/ad/update
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "update",
@@ -83,6 +93,8 @@ Content-Type: application/json
 ### Delete existed
 POST http://localhost:8080/v2/ad/delete
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "delete",
@@ -98,6 +110,8 @@ Content-Type: application/json
 ### Delete non-existed
 POST http://localhost:8080/v2/ad/delete
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "delete",
@@ -113,6 +127,8 @@ Content-Type: application/json
 ### Search by string
 POST http://localhost:8080/v2/ad/search
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "search",
@@ -128,6 +144,8 @@ Content-Type: application/json
 ### Search by string with error
 POST http://localhost:8080/v2/ad/search
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "search",
@@ -143,6 +161,8 @@ Content-Type: application/json
 ### Search offer by unknown id
 POST http://localhost:8080/v2/ad/offers
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "offers",
@@ -158,6 +178,8 @@ Content-Type: application/json
 ### Find offer
 POST http://localhost:8080/v2/ad/offers
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "offers",
@@ -174,6 +196,8 @@ Content-Type: application/json
 ### Not find offer
 POST http://localhost:8080/ad/offers
 Content-Type: application/json
+Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJhZC11c2VycyIsImlzcyI6Ik90dXNLb3RsaW4iLCJncm91cHMiOlsiVVNFUiIsIlRFU1QiXSwiaWQiOiJ1c2VyMSJ9.fE8bj8ICmYpcAbD5uyqj4NxW41RLYFpezBhfbew1pZ4
+
 
 {
   "requestType": "offers",
