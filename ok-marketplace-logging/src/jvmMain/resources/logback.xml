@@ -1,4 +1,4 @@
-<configuration debug="true">
+<configuration>
 
     <!-- For ELK-Stack: Kafka log's host -->
     <property name="LOGS_KAFKA_HOSTS" value="${BOOTSTRAP_SERVERS:-localhost:9094}"/>
@@ -65,6 +65,10 @@
 
     <logger name="ru.otus" level="${LOG_OTUS_LEVEL}" additivity="false">
         <appender-ref ref="asyncMyLogKafka"/>
+        <appender-ref ref="STDOUT"/>
+    </logger>
+
+    <logger name="io.netty" level="INFO">
         <appender-ref ref="STDOUT"/>
     </logger>
 
