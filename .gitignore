@@ -5,3 +5,7 @@
 **/build/
 /dockers/arcadedb
 #/dockers/keycloak
+
+/dockers/elk-stack/volumes/kfdata/*
+/dockers/elk-stack/volumes/esdata/*
+/dockers/elk-stack/tmp
