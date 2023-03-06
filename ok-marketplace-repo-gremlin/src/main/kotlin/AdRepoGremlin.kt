@@ -49,7 +49,9 @@ class AdRepoGremlin(
 
     init {
         if (initRepo != null) {
+            println("init repo started")
             initRepo(g)
+            println("init repo finished")
         }
         initializedObjects = initObjects.map { save(it) }
     }

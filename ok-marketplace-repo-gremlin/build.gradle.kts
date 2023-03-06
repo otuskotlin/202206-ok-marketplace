@@ -15,6 +15,7 @@ dependencies {
     implementation("com.benasher44:uuid:$kmpUUIDVersion")
 
     testImplementation(project(":ok-marketplace-repo-tests"))
+    implementation("org.slf4j:slf4j-api:2.0.6")
 
     implementation(kotlin("stdlib-jdk8"))
     implementation("org.apache.tinkerpop:gremlin-driver:$tinkerpopVersion")

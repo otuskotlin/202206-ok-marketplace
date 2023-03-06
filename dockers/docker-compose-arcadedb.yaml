@@ -9,9 +9,10 @@ services:
     volumes:
       - ./arcadedb:/home/arcadedb/databases
     environment:
-      "arcadedb.server.rootPassword": "root_root"
-      "arcadedb.server.plugins": "GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin"
-      "arcadedb.server.defaultDatabases": "mkpl[root];test[root]"
+      JAVA_OPTS: >
+       -Darcadedb.server.rootPassword=root_root
+       -Darcadedb.server.plugins=GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin
+       -Darcadedb.server.defaultDatabases=mkpl[root];test[root]
 
 #  app:
 #    image: ok-marketplace-be-app-kafka:0.0.1

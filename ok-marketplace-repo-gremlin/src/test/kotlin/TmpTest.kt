@@ -2,6 +2,7 @@
 
 package ru.otus.otuskotlin.marketplace.backend.repository.gremlin
 
+import com.arcadedb.remote.RemoteDatabase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.apache.tinkerpop.gremlin.arcadedb.structure.io.ArcadeIoRegistry
@@ -13,15 +14,17 @@ import org.apache.tinkerpop.gremlin.structure.Vertex
 import org.apache.tinkerpop.gremlin.structure.io.binary.TypeSerializerRegistry
 import org.junit.Ignore
 import org.junit.Test
+
 import ru.otus.otuskotlin.marketplace.common.models.MkplAd
 import ru.otus.otuskotlin.marketplace.common.models.MkplUserId
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdIdRequest
 import ru.otus.otuskotlin.marketplace.common.repo.DbAdRequest
+import kotlin.streams.asSequence
 import kotlin.test.fail
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__` as bs
 
 
-@Ignore("Тест для экспериментов")
+
 @OptIn(ExperimentalCoroutinesApi::class)
 class TmpTest {
 
