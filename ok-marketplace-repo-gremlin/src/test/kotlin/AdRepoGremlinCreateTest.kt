@@ -11,11 +11,7 @@ class AdRepoGremlinCreateTest : RepoAdCreateTest() {
             port = ArcadeDbContainer.container.getMappedPort(8182),
             enableSsl = false,
             initObjects = RepoAdSearchTest.initObjects,
-            initRepo = { g ->
-                g.V().drop()
-                g.V().addV("student").property("name","John")
-                g.V().has("name","John").next()
-                       },
+            initRepo = { g -> g.V().drop().iterate() },
             randomUuid = { lockNew.asString() }
         )
     }
