@@ -1,15 +1,21 @@
 package ru.otus.otuskotlin.marketplace.backend.repository.gremlin
 
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.testcontainers.containers.GenericContainer
+import org.testcontainers.containers.output.OutputFrame
+import org.testcontainers.containers.output.Slf4jLogConsumer
 import org.testcontainers.containers.wait.strategy.Wait
 import org.testcontainers.utility.DockerImageName
 
 object ArcadeDbContainer {
+    var logger: Logger = LoggerFactory.getLogger(this::class.java)
     val container by lazy {
-        GenericContainer(DockerImageName.parse("arcadedata/arcadedb:latest")).apply {
+        GenericContainer(DockerImageName.parse("arcadedata/arcadedb:22.2.1")).apply {
             withExposedPorts(2480, 2424, 8182)
-            withEnv("arcadedb.server.rootPassword", "1r2d3g4h")
-            withEnv("arcadedb.server.plugins", "GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin")
+            withEnv("JAVA_OPTS","""
+       -Darcadedb.server.rootPassword=root_root
+       -Darcadedb.server.plugins=GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin""")
 //            withEnv("arcadedb.server.defaultDatabases", "OpenBeer[root]{import:https://github.com/ArcadeData/arcadedb-datasets/raw/main/orientdb/OpenBeer.gz}")
             waitingFor(Wait.forLogMessage(".*ArcadeDB Server started.*\\n", 1))
             start()
@@ -19,5 +25,9 @@ object ArcadeDbContainer {
             println(this.logs)
             println("RUNNING?: ${this.isRunning}")
         }
+    }
+    init {
+        val logConsumer = Slf4jLogConsumer(logger)
+        container.followOutput(logConsumer, OutputFrame.OutputType.STDOUT)
     }
 }
