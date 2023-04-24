@@ -30,7 +30,7 @@ import ru.otus.otuskotlin.marketplace.common.repo.*
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.`__` as gr
 
 
-class AdRepoGremlin(
+class AdRepoPostgresGremlin(
     private val hosts: String,
     private val port: Int = 8182,
     private val enableSsl: Boolean = false,
@@ -44,16 +44,16 @@ class AdRepoGremlin(
     private val g = traversal()
 
     private fun traversal(): GraphTraversalSource {
-        GlobalConfiguration.SERVER_PLUGINS.setValue("GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin");
+        GlobalConfiguration.SERVER_PLUGINS.setValue("Postgres:com.arcadedb.postgres.PostgresProtocolPlugin,GremlinServer:com.arcadedb.server.gremlin.GremlinServerPlugin");
         return AnonymousTraversalSource.traversal().withRemote(DriverRemoteConnection.using(createCluster(), "demo_graph"))
     }
     private fun createCluster(): Cluster{
         val serializer = GraphBinaryMessageSerializerV1(
             TypeSerializerRegistry.Builder()
         )
-        return Cluster.build().enableSsl(true)
+        return Cluster.build().enableSsl(false)
             .addContactPoint("localhost")
-            .port(8182)
+            .port(5432)
             .credentials("root", "playwithdata")
             .serializer(serializer).create()
     }

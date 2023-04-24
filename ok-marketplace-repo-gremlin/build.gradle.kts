@@ -18,11 +18,14 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.6")
 
     implementation(kotlin("stdlib-jdk8"))
-    implementation("org.apache.tinkerpop:gremlin-driver:$tinkerpopVersion")
+
     implementation("com.arcadedb:arcadedb-engine:$arcadeDbVersion")
     implementation("com.arcadedb:arcadedb-network:$arcadeDbVersion")
     implementation("com.arcadedb:arcadedb-gremlin:$arcadeDbVersion")
-
+    implementation("com.arcadedb:arcadedb-postgresw:$arcadeDbVersion")
+    implementation("com.arcadedb:arcadedb-server:$arcadeDbVersion")
+    implementation("org.apache.tinkerpop:gremlin-core:$tinkerpopVersion")
+    implementation("org.apache.tinkerpop:gremlin-server:$tinkerpopVersion")
     testImplementation(kotlin("test-junit"))
     testImplementation("org.testcontainers:testcontainers:$testContainersVersion")
 }
