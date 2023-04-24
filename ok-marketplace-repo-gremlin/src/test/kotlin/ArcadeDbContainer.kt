@@ -6,7 +6,7 @@ import org.testcontainers.utility.DockerImageName
 
 object ArcadeDbContainer {
     val container by lazy {
-        GenericContainer(DockerImageName.parse("arcadedata/arcadedb:22.8.1")).apply {
+        GenericContainer(DockerImageName.parse("arcadedata/arcadedb:22.2.1")).apply {
             withExposedPorts(2480, 2424, 8182)
             withEnv("JAVA_OPTS","""
        -Darcadedb.server.rootPassword=root_root
